@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Tags on East Chan Mind</title>
+    <link>http://localhost:8080/tags/</link>
+    <description>Recent content in Tags on East Chan Mind</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 14 Jun 2026 10:00:00 +0800</lastBuildDate>
+    <atom:link href="http://localhost:8080/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Buddhism</title>
+      <link>http://localhost:8080/tags/buddhism/</link>
+      <pubDate>Sun, 14 Jun 2026 10:00:00 +0800</pubDate>
+      <guid>http://localhost:8080/tags/buddhism/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Chan</title>
+      <link>http://localhost:8080/tags/chan/</link>
+      <pubDate>Sun, 14 Jun 2026 10:00:00 +0800</pubDate>
+      <guid>http://localhost:8080/tags/chan/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Modern-Life</title>
+      <link>http://localhost:8080/tags/modern-life/</link>
+      <pubDate>Sun, 14 Jun 2026 10:00:00 +0800</pubDate>
+      <guid>http://localhost:8080/tags/modern-life/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Philosophy</title>
+      <link>http://localhost:8080/tags/philosophy/</link>
+      <pubDate>Sun, 14 Jun 2026 10:00:00 +0800</pubDate>
+      <guid>http://localhost:8080/tags/philosophy/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

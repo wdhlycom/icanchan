@@ -1,0 +1,35 @@
+{{- if not (.Param "hideFooter") }}
+<footer class="footer">
+  <div class="footer-content">
+    <!-- Left Column -->
+    <div class="footer-col">
+      <h4>East Chan Mind</h4>
+      <p>Chan is the Chinese root of Zen. We surf the source, not the wave.</p>
+    </div>
+    
+    <!-- Middle Column -->
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="/start-here/">Start Here</a>
+      <a href="/series/">Series</a>
+      <a href="/articles/">Articles</a>
+      <a href="/about/">About</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacy Policy</a>
+    </div>
+    
+    <!-- Right Column -->
+    <div class="footer-col">
+      <h4>Follow</h4>
+      <a href="https://twitter.com/chansurf" target="_blank" rel="noopener">Twitter/X</a>
+      <a href="https://chansurf.substack.com" target="_blank" rel="noopener">Substack</a>
+      <a href="https://youtube.com/@chansurf" target="_blank" rel="noopener">YouTube</a>
+      <a href="/index.xml">RSS Feed</a>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <span>&copy; {{ now.Year }} East Chan Mind. All rights reserved.</span>
+  </div>
+</footer>
+{{- end }}

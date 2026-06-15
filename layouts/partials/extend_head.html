@@ -1,0 +1,7 @@
+{{- /* Head custom content area start */ -}}
+{{- /* Load custom CSS for chan.surf dark theme */ -}}
+{{ $customCSS := resources.Get "css/extended/custom.css" }}
+{{ if $customCSS }}
+  <link rel="stylesheet" href="{{ $customCSS.RelPermalink }}">
+{{ end }}
+{{- /* Head custom content area end */ -}}

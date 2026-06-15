@@ -1,0 +1,150 @@
+{{ define "main" }}
+
+{{/* Get all regular pages from series/buddhism-101, sorted by chapter */}}
+{{ $allArticles := where (where .Site.RegularPages "Section" "series") "Type" "!=" "series" }}
+{{ $latestArticle := index (sort $allArticles "Date" "desc") 0 }}
+{{ $essentialArticles := first 6 (sort $allArticles "Date" "desc") }}
+
+{{/* Random quote — changes on each page load, not continuously */}}
+{{ $quotes := .Site.Data.quotes.quotes }}
+{{ $quoteIndex := mod (now.Unix) (len $quotes) }}
+{{ $quote := index $quotes $quoteIndex }}
+
+<!-- Hero Section — Latest Article -->
+<section class="hero-section">
+  <div class="hero-content">
+    <div class="hero-image-wrapper">
+      {{ if $latestArticle.Params.image }}
+        <img src="{{ $latestArticle.Params.image }}" alt="{{ $latestArticle.Title }}" class="hero-image" />
+      {{ else }}
+        <img src="/images/hero-00.jpg" alt="Featured Article" class="hero-image" />
+      {{ end }}
+    </div>
+    <div class="hero-text">
+      <span class="hero-tag">
+        {{ with $latestArticle.Params.series }}
+          {{ $seriesName := . | humanize | title }}
+          {{ $seriesName }}
+          {{ with $latestArticle.Params.chapter }} · Chapter {{ . }}{{ end }}
+        {{ else }}
+          Latest Article
+        {{ end }}
+      </span>
+      <h1 class="hero-title">{{ $latestArticle.Title }}</h1>
+      <p class="hero-summary">{{ $latestArticle.Description }}</p>
+      <div class="hero-meta">
+        <span>By {{ $latestArticle.Params.author | default "Hu" }}</span>
+        {{ with $latestArticle.Params.reading_time }} · <span>{{ . }} min read</span>{{ end }}
+        · <span>{{ $latestArticle.Date.Format "January 2, 2006" }}</span>
+      </div>
+      <a href="{{ $latestArticle.RelPermalink }}" class="hero-cta">Read →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Mission Statement -->
+<section class="mission-section">
+  <p class="mission-text">"Chan is the Chinese root of Zen. We surf the source, not the wave."</p>
+</section>
+
+<!-- Essential Reading — Dynamic from content -->
+<section class="essential-reading">
+  <h2 class="section-title">Essential Reading</h2>
+  <div class="article-grid">
+    {{ range $essentialArticles }}
+    <article class="article-card">
+      <div class="card-image-wrapper">
+        {{ if .Params.image }}
+          <img src="{{ .Params.image }}" alt="{{ .Title }}" class="card-image" />
+        {{ else }}
+          <img src="/images/hero-00.jpg" alt="{{ .Title }}" class="card-image" />
+        {{ end }}
+      </div>
+      <span class="card-tag">
+        {{ with .Params.series }}{{ . | humanize | title }}{{ else }}Article{{ end }}
+      </span>
+      <h3 class="card-title">{{ .Title }}</h3>
+      <span class="card-meta">
+        {{ with .Params.reading_time }}{{ . }} min read{{ else }}{{ .ReadingTime }} min read{{ end }}
+      </span>
+      <a href="{{ .RelPermalink }}" class="card-link" aria-label="Read: {{ .Title }}"></a>
+    </article>
+    {{ end }}
+  </div>
+</section>
+
+<!-- Explore by Series -->
+<section class="series-section">
+  <h2 class="section-title">Explore by Series</h2>
+  <div class="series-grid">
+    {{ range where .Site.Pages "Section" "series" }}
+      {{ if and (eq .Kind "section") (ne .RelPermalink "/series/") }}
+      <article class="series-card">
+        <div class="series-image-wrapper">
+          {{ if .Params.image }}
+            <img src="{{ .Params.image }}" alt="{{ .Title }}" class="series-image" />
+          {{ else }}
+            <img src="/images/hero-01.jpg" alt="{{ .Title }}" class="series-image" />
+          {{ end }}
+        </div>
+        <div class="series-content">
+          <h3 class="series-name">{{ .Title }}</h3>
+          <p class="series-description">{{ .Description }}</p>
+          {{ $pageCount := len .Pages }}
+          <span class="series-count">{{ $pageCount }} chapters</span>
+          <a href="{{ .RelPermalink }}" class="series-cta">Browse Series →</a>
+        </div>
+      </article>
+      {{ end }}
+    {{ end }}
+  </div>
+</section>
+
+<!-- Chan Quote — Random on page load, static until refresh -->
+<section class="quote-section">
+  <blockquote class="quote-text">"{{ $quote.text }}"</blockquote>
+  <span class="quote-source">— {{ $quote.source }} {{ with $quote.chinese }}({{ . }}){{ end }}</span>
+</section>
+
+<!-- Social Media Entry -->
+<section class="social-section">
+  <h2 class="section-title">Follow the Journey</h2>
+  <div class="social-grid">
+    <a href="https://twitter.com/chansurf" target="_blank" rel="noopener" class="social-card">
+      <div class="social-icon">𝕏</div>
+      <div class="social-info">
+        <h3>Twitter / X</h3>
+        <p>Daily Chan fragments & article links</p>
+      </div>
+    </a>
+    <a href="https://chansurf.substack.com" target="_blank" rel="noopener" class="social-card">
+      <div class="social-icon">✉</div>
+      <div class="social-info">
+        <h3>Substack</h3>
+        <p>New articles delivered to your inbox</p>
+      </div>
+    </a>
+    <a href="https://youtube.com/@chansurf" target="_blank" rel="noopener" class="social-card">
+      <div class="social-icon">▶</div>
+      <div class="social-info">
+        <h3>YouTube</h3>
+        <p>Deep dives into Chan philosophy</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section">
+  <div class="newsletter-content">
+    <h2 class="newsletter-title">Get new articles in your inbox</h2>
+    <p class="newsletter-subtitle">Weekly insights on Chan, Zen, and the art of mindful living. No spam. Unsubscribe anytime.</p>
+    <form class="newsletter-form" action="https://chansurf.substack.com/subscribe" method="post" target="_blank">
+      <input type="email" class="newsletter-input" placeholder="your@email.com" required />
+      <button type="submit" class="newsletter-button">Subscribe</button>
+    </form>
+    <p class="newsletter-privacy">No spam. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+{{ end }}
