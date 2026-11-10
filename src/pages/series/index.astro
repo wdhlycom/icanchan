@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articles', ({ data }) => !data.draft);
+const total = articles.length;
+---
+
+<BaseLayout
+  title="Series"
+  description="Long-form series: thirty chapters through Buddhism and Chan, plus the Platform Sutra."
+  path="/series/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Series</h1>
+      <p>One thread at a time, followed to the end. Chapters are written to be read in order, but each stands on its own.</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="series-card">
+      <img src="/assets/misty-peaks-kyoto.jpg" alt="Ink wash of a temple in pine forest" />
+      <div>
+        <span class="tag">In progress · {total} chapters</span>
+        <h2>Buddhism 101</h2>
+        <p>
+          From “something is missing” to a working map of the mind. Thirty chapters on the Four Noble
+          Truths, the history that produced Chan, and the practice that survives daily life.
+        </p>
+        <a class="btn btn-ghost" href="/series/buddhism-101/">Open the series</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/desert-zen-morocco.jpg" alt="Ink wash landscape" />
+      <div>
+        <span class="tag">Planning</span>
+        <h2>The Platform Sutra</h2>
+        <p>
+          Sixteen episodes around the only Chinese text ever called a sutra. Huineng, the verse on the
+          wall, no-thought, and the sudden-versus-gradual argument.
+        </p>
+        <a class="btn btn-ghost" href="/platform-sutra/">Read the section</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/what-is-chan.jpg" alt="Ink wash" />
+      <div>
+        <span class="tag">From the earlier sites</span>
+        <h2>Short reads</h2>
+        <p>
+          Six short pieces carried over from the two earlier versions of this site, plus two early
+          drafts from the old blog. Each one takes a single question.
+        </p>
+        <a class="btn btn-ghost" href="/essays/">Read the short pieces</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

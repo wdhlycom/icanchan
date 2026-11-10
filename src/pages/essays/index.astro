@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const essays = (await getCollection('essays', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+---
+
+<BaseLayout
+  title="Short reads"
+  description="Short pieces on Chan, kept from the two earlier versions of this site."
+  path="/essays/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Short reads.</h1>
+      <p>Short pieces on Chan, kept from the two earlier versions of this site. Nothing here asks for belief.</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <ul class="chapter-index">
+      {essays.map((entry) => (
+        <li>
+          <a href={`/essays/${entry.id}/`}>
+            <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+            <span class="ttl">{entry.data.title}</span>
+            <span class="meta">{entry.data.readingTime} min</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

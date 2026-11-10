@@ -1,0 +1,124 @@
+---
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale: Locale = Astro.props.locale ?? 'en';
+const t = ui[locale];
+const base = locale === 'zh' ? '/zh' : '';
+
+const pathname = Astro.url.pathname;
+const rel = pathname === '/zh' || pathname.startsWith('/zh/') ? pathname.slice(3) || '/' : pathname;
+const is404 = rel.startsWith('/404');
+const enHref = is404 ? '/' : rel === '/' ? '/' : rel;
+const zhHref = is404 ? '/zh/' : rel === '/' ? '/zh/' : `/zh${rel}`;
+
+const links = t.nav.map((item) => ({ ...item, href: `${base}${item.href}` }));
+const isActive = (href: string) =>
+  rel === href || (href !== '/' && rel.startsWith(href.replace(/\/$/, '')));
+---
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href={base || '/'} class="brand" aria-label="Chan">
+      <img class="brand-mark" src="/assets/chan-logo.png" alt="" width="460" height="469" />
+      <span class="brand-word">Chan</span>
+    </a>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">☰</button>
+
+    <nav class="nav-links" id="nav-links">
+      {links.map((l) => (
+        <a href={l.href} class:list={['nav-item', { active: isActive(l.href) }]}>{l.label}</a>
+      ))}
+
+      <form class="nav-search" action={`${base}/search/`} method="get" role="search">
+        <svg viewBox="0 0 20 20" aria-hidden="true" class="nav-search-icon">
+          <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.4"></circle>
+          <line x1="12.8" y1="12.8" x2="17" y2="17" stroke="currentColor" stroke-width="1.4"></line>
+        </svg>
+        <input
+          type="search"
+          name="q"
+          placeholder={t.searchPlaceholder}
+          aria-label={t.searchPlaceholder}
+          autocomplete="off"
+        />
+      </form>
+
+      <div class="nav-tools">
+        <button
+          class="icon-btn theme-toggle"
+          id="theme-toggle"
+          type="button"
+          aria-label={t.themeToDark}
+          title={t.themeToDark}
+          data-label-dark={t.themeToDark}
+          data-label-light={t.themeToLight}
+        >
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linejoin="round"></path>
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+            <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <line x1="12" y1="2.4" x2="12" y2="5.2"></line>
+              <line x1="12" y1="18.8" x2="12" y2="21.6"></line>
+              <line x1="2.4" y1="12" x2="5.2" y2="12"></line>
+              <line x1="18.8" y1="12" x2="21.6" y2="12"></line>
+              <line x1="5.2" y1="5.2" x2="7.2" y2="7.2"></line>
+              <line x1="16.8" y1="16.8" x2="18.8" y2="18.8"></line>
+              <line x1="5.2" y1="18.8" x2="7.2" y2="16.8"></line>
+              <line x1="16.8" y1="7.2" x2="18.8" y2="5.2"></line>
+            </g>
+          </svg>
+        </button>
+
+        <div class="lang-switch" role="group" aria-label="Language">
+          <a href={enHref} class:list={[{ on: locale === 'en' }]} hreflang="en" lang="en">EN</a>
+          <span class="lang-sep" aria-hidden="true">/</span>
+          <a href={zhHref} class:list={[{ on: locale === 'zh' }]} hreflang="zh" lang="zh">中</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('nav-links');
+  toggle?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(!!open));
+  });
+
+  const themeBtn = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+  const syncThemeLabel = () => {
+    if (!themeBtn) return;
+    const dark = root.dataset.theme === 'dark';
+    const label = dark
+      ? themeBtn.dataset.labelLight || 'Switch to light'
+      : themeBtn.dataset.labelDark || 'Switch to dark';
+    themeBtn.setAttribute('aria-label', label);
+    themeBtn.setAttribute('title', label);
+  };
+  syncThemeLabel();
+  themeBtn?.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* 无痕模式下忽略 */
+    }
+    syncThemeLabel();
+  });
+</script>

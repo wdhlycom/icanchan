@@ -1,0 +1,111 @@
+baseURL = 'https://canchan.com'
+languageCode = 'en-us'
+title = '参禅 canchan — Chan, the Chinese source of Zen'
+theme = 'hugo-papermod-master'
+
+[params]
+  env = 'production'
+  description = 'Chan is the Chinese root of Zen. We read it with modern science, not faith.'
+  author = 'Hu'
+  defaultTheme = 'dark'
+  disableThemeToggle = true
+  ShowReadingTime = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowRssButtonInSectionTermList = true
+  ShowShareButtons = true
+  ShowPageNums = true
+  disableSpecial1stPost = true
+  disableScrollToTop = false
+  
+  [params.homeInfoParams]
+    Title = '参禅 canchan'
+    Content = 'Chan is the Chinese source of Zen. We surf the source, not the wave.'
+    AlignSocialIconsTo = 'center'
+
+  [params.label]
+    text = '参禅 canchan'
+    icon = ''
+    iconHeight = 30
+
+  [params.footer]
+    hideCopyright = false
+    text = ''
+
+[params.assets]
+  disableHLJS = true
+
+[menu]
+  [[menu.main]]
+    identifier = 'buddhism'
+    name = 'Buddhism'
+    url = '/buddhism/'
+    weight = 10
+  
+  [[menu.main]]
+    identifier = 'science'
+    name = 'Science'
+    url = '/science-of-chan/'
+    weight = 20
+  
+  [[menu.main]]
+    identifier = 'practice'
+    name = 'Practice'
+    url = '/practice/'
+    weight = 30
+  
+  [[menu.main]]
+    identifier = 'platform-sutra'
+    name = 'Platform Sutra'
+    url = '/platform-sutra/'
+    weight = 40
+  
+  [[menu.main]]
+    identifier = 'journey'
+    name = 'Journey'
+    url = '/journey/'
+    weight = 50
+  
+  [[menu.main]]
+    identifier = 'demos'
+    name = 'Demos'
+    url = '/demos/'
+    weight = 60
+  
+  [[menu.main]]
+    identifier = 'about'
+    name = 'About'
+    url = '/about/'
+    weight = 70
+  
+  [[menu.main]]
+    identifier = 'subscribe'
+    name = 'Subscribe'
+    url = '/subscribe/'
+    weight = 80
+
+[languages]
+  [languages.en]
+    languageName = 'English'
+    weight = 1
+    
+[taxonomies]
+  category = 'categories'
+  tag = 'tags'
+  series = 'series'
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+  [markup.highlight]
+    noClasses = false
+    anchorLineNos = true
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    style = 'monokai'

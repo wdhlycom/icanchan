@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+import { sections } from '../data/sections';
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+const featured = articles.slice(0, 6);
+---
+
+<BaseLayout
+  title="Chan"
+  description="Chan is the Chinese source of Zen. We read it with modern science, not faith — thirty chapters, six ways in."
+>
+  <section class="hero container fade-in">
+    <img class="hero-image" src="/assets/start-space.jpg" alt="A single stone resting in still water, ink wash" />
+    <div class="hero-text">
+      <span class="eyebrow">The Chinese source of Zen</span>
+      <h1 class="hero-title">Chan is not Zen.</h1>
+      <p class="hero-lead">
+        Zen is the Japanese pronunciation. Chan is the Chinese original — the living root the West met
+        only after it had already been trimmed, stylised, and renamed. We go back to the source, and we
+        read it with modern eyes.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="/start-here/">Start here →</a>
+        <a class="btn btn-ghost" href="/series/buddhism-101/">Read the series</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mission">
+    <img class="mission-glyph" src="/assets/chan-logo.png" alt="" aria-hidden="true" />
+    <div class="container">
+      <p>“Can you Chan? We surf the source, not the wave.”</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro">
+      <span class="eyebrow">Six ways in</span>
+      <h2>One room, six doors.</h2>
+      <p>
+        The same tradition, entered from whichever side you actually care about — history, evidence,
+        practice, or the text itself.
+      </p>
+    </div>
+    <div class="path-grid">
+      {sections.map((s) => (
+        <a class="path-card" href={`/${s.slug}/`} style={`--path-color:${s.color}`}>
+          <span class="path-icon">{s.icon}</span>
+          <h3>{s.title}</h3>
+          <p>{s.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:48px">
+      <span class="eyebrow">The series</span>
+      <h2>Begin at the beginning.</h2>
+      <p>Thirty chapters. One thread: what the mind actually does, and how to see it.</p>
+    </div>
+    <div class="article-grid">
+      {featured.map((entry) => (
+        <ArticleCard entry={entry} />
+      ))}
+    </div>
+    <p style="text-align:center;margin-top:56px">
+      <a class="link-underline serif" style="font-size:20px" href="/series/buddhism-101/">All thirty chapters →</a>
+    </p>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="split-grid">
+      <a class="split-card" href="/platform-sutra/">
+        <img src="/assets/desert-zen-morocco.jpg" alt="" loading="lazy" />
+        <span class="tag">The text</span>
+        <h3>The only sutra China ever wrote</h3>
+        <p>
+          Huineng could not read. He still produced the one Chinese text honoured as a sutra. No-thought,
+          no-form, no-abiding — and the argument about sudden awakening that split Chan in two.
+        </p>
+        <span class="link-underline" style="font-size:12px;letter-spacing:.14em;text-transform:uppercase">Read the Platform Sutra →</span>
+      </a>
+      <a class="split-card" href="/practice/">
+        <img src="/assets/curated-hero.jpg" alt="" loading="lazy" />
+        <span class="tag">The method</span>
+        <h3>Practice that survives a Tuesday</h3>
+        <p>
+          Watching the breath without engineering it. Eating, walking, talking. What to do when an
+          emotion lands in the middle of a meeting. Nothing here requires a retreat.
+        </p>
+        <span class="link-underline" style="font-size:12px;letter-spacing:.14em;text-transform:uppercase">Go to practice →</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

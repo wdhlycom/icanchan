@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Subscribe"
+  description="One quiet email, one chapter at a time. No noise in between."
+  path="/subscribe/"
+>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">Stay close</span>
+      <h1>Subscribe</h1>
+      <p>One chapter at a time, as they are finished. Nothing else.</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="reading">
+      <ul class="pillar-list">
+        <li>A new chapter when one is actually done — not on a forced schedule.</li>
+        <li>Occasional notes on what I am reading, and where the evidence is thin.</li>
+        <li>No advertising, no upsells, no “10 habits of mindful people”.</li>
+      </ul>
+      <p style="margin-top:32px;color:var(--muted);line-height:1.9">
+        If you would rather not give an address, the RSS feed works the same way and asks nothing:
+        <a class="link-underline" href="/rss.xml">/rss.xml</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

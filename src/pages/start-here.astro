@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+const firstSix = articles.slice(0, 6);
+---
+
+<BaseLayout
+  title="Start Here"
+  description="New to Chan? Three ways in, and a reading order that does not waste your first hour."
+  path="/start-here/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Start here.</h1>
+      <p>
+        You do not need to believe anything to read this site. You need one hour, and a willingness to
+        notice what your mind is already doing.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="reading">
+      <p class="serif" style="font-size:26px;line-height:1.5;margin-bottom:36px">
+        Chan (禪) is the Chinese original of what the West calls Zen. It arrived in China fifteen hundred
+        years ago, mixed with Daoism and Confucianism, and only later travelled to Japan, where it was
+        trimmed, formalised and renamed.
+      </p>
+      <p style="color:var(--muted);line-height:1.9;margin-bottom:22px">
+        Most English material starts from the Japanese branch. This site starts from the root — and reads
+        it with modern eyes: what can be tested, what cannot, and why the difference matters.
+      </p>
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:44px">
+      <span class="eyebrow">Pick your door</span>
+      <h2>Three readers, three ways in.</h2>
+    </div>
+    <div class="path-grid">
+      <a class="path-card" href="/science-of-chan/" style="--path-color:#6f93b8">
+        <span class="path-icon">⌬</span>
+        <h3>If you are the rational type</h3>
+        <p>Start with the evidence: no-self and the default mode network, breath and the amygdala. Then decide what to keep.</p>
+      </a>
+      <a class="path-card" href="/journey/" style="--path-color:#7d8a7a">
+        <span class="path-icon">↟</span>
+        <h3>If you came from Zen</h3>
+        <p>Start with the history: how the Buddha’s teaching became Chan, and what Japan changed on the way.</p>
+      </a>
+      <a class="path-card" href="/practice/" style="--path-color:#5f9a83">
+        <span class="path-icon">❋</span>
+        <h3>If you just want to practise</h3>
+        <p>Start with the methods: watching the breath, walking, and what to do when an emotion lands.</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:44px">
+      <span class="eyebrow">The reading order</span>
+      <h2>First six chapters.</h2>
+      <p>Written to be read in order. Each one stands alone, but they build.</p>
+    </div>
+    <div class="chapter-list">
+      {firstSix.map((entry) => (
+        <a class="chapter-row" href={`/series/buddhism-101/${entry.id}/`}>
+          <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+          <span class="ttl">{entry.data.title}</span>
+          <span class="meta">{entry.data.readingTime} min</span>
+        </a>
+      ))}
+    </div>
+    <p style="text-align:center;margin-top:48px">
+      <a class="btn btn-solid" href="/series/buddhism-101/">All thirty chapters</a>
+    </p>
+  </section>
+</BaseLayout>

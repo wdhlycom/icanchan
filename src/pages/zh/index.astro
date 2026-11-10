@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+import { localizedSections } from '../../data/sections-zh';
+
+const articles = (await getCollection('articlesZh', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+const featured = articles.slice(0, 6);
+const sections = localizedSections('zh');
+---
+
+<BaseLayout
+  locale="zh"
+  title="Chan"
+  description="禅是 Zen 的中国源头。我们用今天的眼光读它，不借信仰。三十章，六道门。"
+  path="/zh/"
+>
+  <section class="hero container fade-in">
+    <img class="hero-image" src="/assets/start-space.jpg" alt="静水中落着一块石头，水墨" />
+    <div class="hero-text">
+      <span class="eyebrow">Zen 的中国源头</span>
+      <h1 class="hero-title">禅，不是 Zen。</h1>
+      <p class="hero-lead">
+        Zen 是日语读法，禅才是中国的本来面目。西方见到它时，它已经被修剪、被改了名字。我们回到源头，用今天的眼光重新读一遍。
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="/zh/start-here/">入门 →</a>
+        <a class="btn btn-ghost" href="/zh/series/buddhism-101/">读全系列</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mission">
+    <img class="mission-glyph" src="/assets/chan-logo.png" alt="" aria-hidden="true" />
+    <div class="container">
+      <p>“你参禅吗？一起寻源，不逐浪花。”</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro">
+      <span class="eyebrow">六道门</span>
+      <h2>一间屋子，六扇门。</h2>
+      <p>同一个传统，从你最在意的那扇门进去：历史、证据、修行，或者文本本身。</p>
+    </div>
+    <div class="path-grid">
+      {sections.map((s) => (
+        <a class="path-card" href={`/zh/${s.slug}/`} style={`--path-color:${s.color}`}>
+          <span class="path-icon">{s.icon}</span>
+          <h3>{s.title}</h3>
+          <p>{s.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:48px">
+      <span class="eyebrow">系列</span>
+      <h2>从头读起。</h2>
+      <p>三十章，一条线：心在做什么，怎么看见它。</p>
+    </div>
+    <div class="article-grid">
+      {featured.map((entry) => <ArticleCard entry={entry} locale="zh" />)}
+    </div>
+    <p style="text-align:center;margin-top:56px">
+      <a class="link-underline serif" style="font-size:20px" href="/zh/series/buddhism-101/">看全部三十章 →</a>
+    </p>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="split-grid">
+      <a class="split-card" href="/zh/platform-sutra/">
+        <img src="/assets/desert-zen-morocco.jpg" alt="" loading="lazy" />
+        <span class="tag">文本</span>
+        <h3>中国唯一称「经」的一部</h3>
+        <p>
+          慧能不识字，却留下中国唯一被尊为「经」的文本。无念、无相、无住，还有那场把禅宗分成两半的顿渐之争。
+        </p>
+        <span class="link-underline" style="font-size:12px;letter-spacing:.14em">读坛经 →</span>
+      </a>
+      <a class="split-card" href="/zh/practice/">
+        <img src="/assets/curated-hero.jpg" alt="" loading="lazy" />
+        <span class="tag">方法</span>
+        <h3>带得进日子的修行</h3>
+        <p>
+          观呼吸，不去改造它；吃饭、走路、说话；情绪在会议里冒出来时怎么办。这里没有一件事需要你请假闭关。
+        </p>
+        <span class="link-underline" style="font-size:12px;letter-spacing:.14em">看修行 →</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

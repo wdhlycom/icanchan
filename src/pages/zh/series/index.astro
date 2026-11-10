@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articlesZh', ({ data }) => !data.draft);
+const total = articles.length;
+---
+
+<BaseLayout
+  locale="zh"
+  title="系列"
+  description="长篇系列：三十章佛学与禅，加上《坛经》。"
+  path="/zh/series/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>系列</h1>
+      <p>一次只跟一条线，跟到底。章节顺着写，单看也行。</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="series-card">
+      <img src="/assets/misty-peaks-kyoto.jpg" alt="松林古寺水墨" />
+      <div>
+        <span class="tag">进行中 · {total} 章</span>
+        <h2>佛学入门 101</h2>
+        <p>
+          从「总觉得少了点什么」走到一张用得上的心智地图。三十章：四圣谛、禅的来路，以及带得进日子的修行。
+        </p>
+        <a class="btn btn-ghost" href="/zh/series/buddhism-101/">进入系列</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/desert-zen-morocco.jpg" alt="水墨山水" />
+      <div>
+        <span class="tag">筹备中</span>
+        <h2>《坛经》</h2>
+        <p>十六集，围绕中国唯一称「经」的文本。慧能、墙上那首偈、无念，以及顿渐之争。</p>
+        <a class="btn btn-ghost" href="/zh/platform-sutra/">看这一栏</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/what-is-chan.jpg" alt="水墨" />
+      <div>
+        <span class="tag">旧站留存</span>
+        <h2>短章</h2>
+        <p>两个旧站留下的六篇短文，加上旧博客里两篇早期草稿。每篇只谈一个问题。</p>
+        <a class="btn btn-ghost" href="/zh/essays/">读短章</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

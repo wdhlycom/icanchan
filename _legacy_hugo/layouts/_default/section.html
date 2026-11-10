@@ -1,0 +1,25 @@
+{{ define "main" }}
+<section class="cz-section-page">
+  <header class="cz-section-head">
+    <h1 class="cz-section-page-title">{{ .Title }}</h1>
+    {{ with .Description }}<p class="cz-section-desc">{{ . }}</p>{{ end }}
+  </header>
+
+  {{ with .Content }}<div class="cz-section-body">{{ . }}</div>{{ end }}
+
+  {{ $pages := .Pages }}
+  {{ if $pages }}
+  <div class="cz-article-grid">
+    {{ range $pages }}
+    <a href="{{ .RelPermalink }}" class="cz-article-card">
+      <span class="cz-article-card-title">{{ .Title }}</span>
+      {{ with .Description }}<span class="cz-article-card-desc">{{ . }}</span>{{ end }}
+      <span class="cz-article-card-meta">{{ .ReadingTime }} min read</span>
+    </a>
+    {{ end }}
+  </div>
+  {{ else }}
+  <p class="cz-section-empty">内容建设中 — 已有文章将按板块归位。</p>
+  {{ end }}
+</section>
+{{ end }}

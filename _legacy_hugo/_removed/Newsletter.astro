@@ -1,0 +1,41 @@
+---
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  title?: string;
+  note?: string;
+  locale?: Locale;
+}
+
+const locale: Locale = Astro.props.locale ?? 'en';
+const t = ui[locale];
+const { title = t.newsletterTitle, note = t.newsletterNote } = Astro.props;
+---
+
+<div class="newsletter">
+  <span class="eyebrow">{t.newsletterKicker}</span>
+  <h2>{title}</h2>
+  <p>{note}</p>
+  <form class="newsletter-form" id="newsletter-form">
+    <input
+      class="newsletter-input"
+      type="email"
+      name="email"
+      placeholder={t.newsletterPlaceholder}
+      aria-label={t.newsletterPlaceholder}
+      required
+    />
+    <button class="btn btn-solid" type="submit">{t.newsletterButton}</button>
+  </form>
+  <p class="form-note" id="newsletter-note" data-sent={t.newsletterSent}>{t.newsletterPending}</p>
+</div>
+
+<script>
+  const form = document.getElementById('newsletter-form');
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const note = document.getElementById('newsletter-note');
+    if (note) note.textContent = note.dataset.sent || 'Thank you.';
+    (form as HTMLFormElement).reset();
+  });
+</script>

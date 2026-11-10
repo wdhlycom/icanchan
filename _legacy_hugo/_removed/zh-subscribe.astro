@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  locale="zh"
+  title="订阅"
+  description="一封安静的信，一章一章地来。中间不吵你。"
+  path="/zh/subscribe/"
+>
+  <section class="page-head">
+    <div class="container">
+      <span class="eyebrow">保持联系</span>
+      <h1>订阅</h1>
+      <p>一章一章地来，写完了才发。没有别的。</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="reading">
+      <ul class="pillar-list">
+        <li>一章真写完了，才会寄一次——不硬凑时间表。</li>
+        <li>偶尔说说我在读什么，以及哪里的证据其实很薄。</li>
+        <li>没有广告，没有升级推销，没有「正念人士的十个习惯」。</li>
+      </ul>
+      <p style="margin-top:32px;color:var(--muted);line-height:1.9">
+        不想留邮箱也行。RSS 一样能用，而且什么都不问你要：<a class="link-underline" href="/rss.xml">/rss.xml</a>。
+      </p>
+    </div>
+  </section>
+</BaseLayout>

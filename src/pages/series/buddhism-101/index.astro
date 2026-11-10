@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = (await getCollection('articles', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+---
+
+<BaseLayout
+  title="Buddhism 101"
+  description="Thirty chapters from the first noble truth to a working map of the mind — the long way into Chan."
+  path="/series/buddhism-101/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Buddhism 101</h1>
+      <p>
+        Starts where most readers actually are: things look fine, and something is missing. Ends with a
+        map you can use on a Wednesday afternoon.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="chapter-list">
+      {articles.map((entry) => (
+        <a class="chapter-row" href={`/series/buddhism-101/${entry.id}/`}>
+          <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+          <span class="ttl">{entry.data.title}</span>
+          <span class="meta">{entry.data.category} · {entry.data.readingTime} min</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

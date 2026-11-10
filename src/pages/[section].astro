@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { sections, type Section } from '../data/sections';
+
+export function getStaticPaths() {
+  return sections.map((section) => ({
+    params: { section: section.slug },
+    props: { section },
+  }));
+}
+
+interface Props {
+  section: Section;
+}
+
+const { section } = Astro.props;
+
+const all = await getCollection('articles', ({ data }) => !data.draft);
+const related = all
+  .filter((entry) => entry.data.section === section.slug)
+  .sort((a, b) => a.data.chapter - b.data.chapter);
+---
+
+<BaseLayout title={section.title} description={section.description} path={`/${section.slug}/`}>
+  <section class="page-head">
+    <div class="container">
+      <h1>{section.title}</h1>
+      <p>{section.description}</p>
+    </div>
+  </section>
+
+  <section class="container" style="padding:64px 0 0">
+    <img class="article-cover" src={section.cover} alt="" style="margin-bottom:0" />
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>{related.length > 0 ? 'Chapters' : 'Being written'}</h2>
+    </div>
+
+    {related.length > 0 ? (
+      <ul class="chapter-index">
+        {related.map((entry) => (
+          <li>
+            <a href={`/series/buddhism-101/${entry.id}/`}>
+              <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+              <span class="ttl">{entry.data.title}</span>
+              <span class="meta">{entry.data.readingTime} min</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="section-empty">
+        Nothing is published here yet. When it is, it will live on this page and nowhere else.
+      </p>
+    )}
+  </section>
+</BaseLayout>

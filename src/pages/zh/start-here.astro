@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = (await getCollection('articlesZh', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+const firstSix = articles.slice(0, 6);
+---
+
+<BaseLayout
+  locale="zh"
+  title="入门"
+  description="第一次读禅？三条路，和一个不浪费头一个钟头的读法。"
+  path="/zh/start-here/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>入门。</h1>
+      <p>读这个站不必先信什么。留一个钟头，愿意看看自己心里正在发生什么，就够了。</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="reading">
+      <p class="lead-serif">
+        禅是 Zen 的中国源头。一千五百年前它在中国扎下根，与道家、儒家彼此浸染；后来东传日本，才被修剪、被程式化、改了名字。
+      </p>
+      <p class="body-copy">
+        英文书多半从日本那一枝讲起。这里从根讲起，也用今天的眼光读它：哪些能验证，哪些不能，这个分别为什么重要。
+      </p>
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:44px">
+      <span class="eyebrow">挑一扇门</span>
+      <h2>三种读者，三条路。</h2>
+    </div>
+    <div class="path-grid">
+      <a class="path-card" href="/zh/science-of-chan/" style="--path-color:#6f93b8">
+        <span class="path-icon">⌬</span>
+        <h3>讲理的人</h3>
+        <p>先看证据：无我与默认模式网络，呼吸与杏仁核。再决定留下什么。</p>
+      </a>
+      <a class="path-card" href="/zh/journey/" style="--path-color:#7d8a7a">
+        <span class="path-icon">↟</span>
+        <h3>从 Zen 转过来的</h3>
+        <p>先看历史：佛陀的教法怎么变成禅，日本又改了什么。</p>
+      </a>
+      <a class="path-card" href="/zh/practice/" style="--path-color:#5f9a83">
+        <span class="path-icon">❋</span>
+        <h3>只想上手练</h3>
+        <p>从方法看起：观呼吸、走路，情绪落下来的时候怎么办。</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:44px">
+      <span class="eyebrow">阅读顺序</span>
+      <h2>先读前六章。</h2>
+      <p>本来就是顺着写的。每章单看也行，连着读更清楚。</p>
+    </div>
+    <div class="chapter-list">
+      {firstSix.map((entry) => (
+        <a class="chapter-row" href={`/zh/series/buddhism-101/${entry.id}/`}>
+          <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+          <span class="ttl">{entry.data.title}</span>
+          <span class="meta">{entry.data.readingTime} 分钟</span>
+        </a>
+      ))}
+    </div>
+    <p style="text-align:center;margin-top:48px">
+      <a class="btn btn-solid" href="/zh/series/buddhism-101/">看全部三十章</a>
+    </p>
+  </section>
+</BaseLayout>

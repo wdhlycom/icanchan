@@ -1,0 +1,26 @@
+---
+import { ui, type Locale } from '../i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale: Locale = Astro.props.locale ?? 'en';
+const t = ui[locale];
+const base = locale === 'zh' ? '/zh' : '';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-min">
+    <nav class="footer-links" aria-label={t.footerNav}>
+      <a href={base || '/'}>{t.home}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href={`${base}/about/`}>{t.about}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="/rss.xml">RSS</a>
+    </nav>
+    <p class="footer-copy">© {year} icanchan.com</p>
+    <a class="footer-top" href="#top">{t.backToTop} ↑</a>
+  </div>
+</footer>

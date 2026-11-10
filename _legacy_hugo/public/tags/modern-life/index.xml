@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Modern-Life on East Chan Mind</title>
+    <link>https://localhost:3000/tags/modern-life/</link>
+    <description>Recent content in Modern-Life on East Chan Mind</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 14 Jun 2026 10:00:00 +0800</lastBuildDate>
+    <atom:link href="https://localhost:3000/tags/modern-life/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Day 1: Abundant Everything, Empty Something</title>
+      <link>https://localhost:3000/series/buddhism-101/day-01-abundant-everything-empty-something/</link>
+      <pubDate>Sun, 14 Jun 2026 10:00:00 +0800</pubDate>
+      <guid>https://localhost:3000/series/buddhism-101/day-01-abundant-everything-empty-something/</guid>
+      <description>Life looks fine on paper. But there&amp;#39;s a hollowness where something should be. This isn&amp;#39;t personal failure — it&amp;#39;s a symptom of our time.</description>
+    </item>
+  </channel>
+</rss>

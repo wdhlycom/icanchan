@@ -1,0 +1,86 @@
+/* ============ canchan homepage — Chan ≠ Zen immersive ============ */
+/* Built on top of East Chan Mind dark theme (deep blue base). */
+
+.cz-nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 28px;
+  background: rgba(10, 31, 51, 0.82);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--cs-border);
+}
+.cz-nav-brand { font-size: 18px; font-weight: 700; color: var(--cs-text-primary); text-decoration: none; letter-spacing: .5px; }
+.cz-nav-brand span { color: var(--cs-accent); font-weight: 500; font-size: 13px; margin-left: 4px; }
+.cz-nav-links { display: flex; gap: 18px; flex-wrap: wrap; }
+.cz-nav-links a { color: var(--cs-text-secondary); text-decoration: none; font-size: 13px; opacity: .8; transition: opacity .2s, color .2s; }
+.cz-nav-links a:hover { opacity: 1; color: var(--cs-accent); }
+
+.cz-hero { max-width: 880px; margin: 0 auto; padding: 92px 28px 72px; text-align: center; }
+.cz-kicker { color: var(--cs-accent); font-size: 13px; letter-spacing: 3px; text-transform: uppercase; margin: 0 0 18px; }
+.cz-hero-title { font-size: 64px; line-height: 1.05; margin: 0 0 24px; color: var(--cs-text-primary); font-weight: 800; letter-spacing: -1px; }
+.cz-hero-lead { font-size: 19px; line-height: 1.7; color: var(--cs-text-secondary); max-width: 680px; margin: 0 auto 36px; }
+.cz-hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+.cz-btn { display: inline-block; padding: 13px 26px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; transition: transform .15s, background .2s, border-color .2s; }
+.cz-btn:hover { transform: translateY(-2px); }
+.cz-btn-primary { background: var(--cs-accent); color: #fff; }
+.cz-btn-primary:hover { background: var(--cs-accent-hover); }
+.cz-btn-ghost { background: transparent; color: var(--cs-text-primary); border: 1px solid var(--cs-border-light); }
+.cz-btn-ghost:hover { border-color: var(--cs-accent); color: var(--cs-accent); }
+.cz-light { color: #eaf2f7; }
+
+.cz-section-h { font-size: 26px; font-weight: 700; color: var(--cs-text-primary); text-align: center; margin: 0 0 36px; }
+
+.cz-correct { max-width: 1000px; margin: 0 auto; padding: 40px 28px 80px; }
+.cz-split { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.cz-card { background: var(--cs-bg-card); border: 1px solid var(--cs-border); border-radius: 14px; padding: 28px; }
+.cz-card p { font-size: 15px; line-height: 1.7; color: var(--cs-text-primary); margin: 0 0 14px; }
+.cz-card p:last-child { margin-bottom: 0; }
+.cz-card-myth { border-top: 3px solid #6b7280; }
+.cz-card-truth { border-top: 3px solid var(--cs-accent); }
+.cz-card-tag { display: inline-block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #9ca3af; margin-bottom: 14px; }
+.cz-card-tag-truth { color: var(--cs-accent); }
+.cz-muted { color: var(--cs-text-secondary); opacity: .75; }
+
+.cz-science { background: linear-gradient(180deg, #0c2740, #0a1f33); border-top: 1px solid var(--cs-border); border-bottom: 1px solid var(--cs-border); padding: 72px 28px; }
+.cz-science-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+.cz-science-lead { font-size: 17px; line-height: 1.8; color: var(--cs-text-secondary); margin: 0 0 28px; }
+
+.cz-paths { max-width: 1080px; margin: 0 auto; padding: 80px 28px; }
+.cz-path-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.cz-path { display: block; background: var(--cs-bg-card); border: 1px solid var(--cs-border); border-radius: 14px; padding: 26px 22px; text-decoration: none; border-top: 3px solid var(--pc); transition: transform .18s, background .2s; }
+.cz-path:hover { transform: translateY(-4px); background: var(--cs-bg-card-hover); }
+.cz-path-icon { display: block; font-size: 24px; color: var(--pc); margin-bottom: 14px; }
+.cz-path-title { display: block; font-size: 17px; font-weight: 700; color: var(--cs-text-primary); margin-bottom: 6px; }
+.cz-path-sub { display: block; font-size: 13px; color: var(--cs-text-secondary); line-height: 1.5; }
+
+.cz-news { max-width: 620px; margin: 0 auto; padding: 80px 28px 100px; text-align: center; }
+.cz-news-form { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; justify-content: center; }
+.cz-news-input { flex: 1; min-width: 240px; padding: 13px 16px; border-radius: 10px; border: 1px solid var(--cs-border-light); background: var(--cs-bg-elevated); color: var(--cs-text-primary); font-size: 14px; }
+.cz-news-input::placeholder { color: #5b738c; }
+
+@media (max-width: 820px) {
+  .cz-hero-title { font-size: 44px; }
+  .cz-split { grid-template-columns: 1fr; }
+  .cz-path-grid { grid-template-columns: 1fr; }
+  .cz-nav-links { display: none; }
+}
+
+/* ---- Section (板块) pages ---- */
+.cz-section-page { max-width: 1080px; margin: 0 auto; padding: 72px 28px 90px; }
+.cz-section-head { text-align: center; margin-bottom: 16px; }
+.cz-section-page-title { font-size: 38px; font-weight: 800; color: var(--cs-text-primary); margin: 0 0 14px; }
+.cz-section-desc { font-size: 16px; line-height: 1.7; color: var(--cs-text-secondary); max-width: 720px; margin: 0 auto; opacity: .85; }
+.cz-section-body { max-width: 760px; margin: 28px auto 40px; font-size: 15px; line-height: 1.8; color: var(--cs-text-primary); }
+.cz-section-body p { margin: 0 0 12px; }
+.cz-article-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.cz-article-card { display: block; background: var(--cs-bg-card); border: 1px solid var(--cs-border); border-radius: 14px; padding: 22px; text-decoration: none; transition: transform .18s, background .2s; }
+.cz-article-card:hover { transform: translateY(-4px); background: var(--cs-bg-card-hover); }
+.cz-article-card-title { display: block; font-size: 16px; font-weight: 700; color: var(--cs-text-primary); margin-bottom: 8px; line-height: 1.4; }
+.cz-article-card-desc { display: block; font-size: 13px; color: var(--cs-text-secondary); line-height: 1.5; margin-bottom: 12px; }
+.cz-article-card-meta { display: block; font-size: 12px; color: #5b738c; }
+.cz-section-empty { text-align: center; color: var(--cs-text-secondary); opacity: .7; font-size: 15px; margin-top: 30px; }
+
+@media (max-width: 820px) {
+  .cz-article-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const essays = (await getCollection('essaysZh', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+---
+
+<BaseLayout
+  locale="zh"
+  title="短章"
+  description="从两个旧站里留下来的短篇，谈禅，不谈信仰。"
+  path="/zh/essays/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>短章</h1>
+      <p>从两个旧站里留下来的短篇，谈禅，不谈信仰。</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <ul class="chapter-index">
+      {essays.map((entry) => (
+        <li>
+          <a href={`/zh/essays/${entry.id}/`}>
+            <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+            <span class="ttl">{entry.data.title}</span>
+            <span class="meta">{entry.data.readingTime} 分钟</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

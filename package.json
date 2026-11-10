@@ -1,0 +1,19 @@
+{
+  "name": "icanchan",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1 --port 4321",
+    "build": "astro build && pagefind --site dist",
+    "preview": "node scripts/serve.mjs",
+    "preview:astro": "astro preview --host 127.0.0.1 --port 4321",
+    "logo": "node scripts/prep-logo.mjs"
+  },
+  "dependencies": {
+    "astro": "^6.4.8"
+  },
+  "devDependencies": {
+    "pagefind": "^1.6.0"
+  }
+}

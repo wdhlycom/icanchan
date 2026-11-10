@@ -1,0 +1,68 @@
+<header class="header">
+  <div class="header-nav">
+    <a href="/" class="logo">
+      <img src="/images/chan.jpeg" alt="East Chan Mind Logo" class="site-logo">
+    </a>
+    
+    <nav class="menu">
+      <a href="/">Home</a>
+      <a href="/start-here/">Start Here</a>
+      <a href="/series/">Series</a>
+      <a href="/articles/">Articles</a>
+      <a href="/about/">About</a>
+      <a href="/contact/">Contact</a>
+      <a href="/guestbook/">Guestbook</a>
+      <a href="/subscribe/">Subscribe</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+.header {
+  background: var(--cs-bg-elevated);
+  border-bottom: 1px solid var(--cs-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-nav {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.menu {
+  display: flex;
+  gap: 24px;
+}
+
+.menu a {
+  font-size: 1.2rem;
+  margin: 0 8px;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  text-decoration: none;
+  color: var(--cs-text-secondary);
+  border-radius: 6px;
+}
+
+.menu a:hover {
+  color: #fff;
+  background: var(--cs-accent);
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+}
+</style>

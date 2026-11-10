@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { localizedSections } from '../../data/sections-zh';
+
+export function getStaticPaths() {
+  return localizedSections('zh').map((section) => ({
+    params: { section: section.slug },
+    props: { section },
+  }));
+}
+
+const { section } = Astro.props;
+
+const all = await getCollection('articlesZh', ({ data }) => !data.draft);
+const related = all
+  .filter((entry) => entry.data.section === section.slug)
+  .sort((a, b) => a.data.chapter - b.data.chapter);
+---
+
+<BaseLayout
+  locale="zh"
+  title={section.title}
+  description={section.description}
+  path={`/zh/${section.slug}/`}
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>{section.title}</h1>
+      <p>{section.description}</p>
+    </div>
+  </section>
+
+  <section class="container" style="padding:64px 0 0">
+    <img class="article-cover" src={section.cover} alt="" style="margin-bottom:0" />
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>{related.length > 0 ? '相关章节' : '正在写'}</h2>
+    </div>
+
+    {related.length > 0 ? (
+      <ul class="chapter-index">
+        {related.map((entry) => (
+          <li>
+            <a href={`/zh/series/buddhism-101/${entry.id}/`}>
+              <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+              <span class="ttl">{entry.data.title}</span>
+              <span class="meta">{entry.data.readingTime} 分钟</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="section-empty">这一栏还没开始写。写好了就只放在这一页。</p>
+    )}
+  </section>
+</BaseLayout>

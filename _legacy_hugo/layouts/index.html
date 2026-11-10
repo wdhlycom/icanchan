@@ -1,0 +1,91 @@
+{{ define "main" }}
+
+{{/* Six content paths — keep in sync with hugo.toml menu */}}
+{{ $paths := slice
+  (dict "url" "/buddhism/" "title" "Buddhism 基础" "sub" "三学八正道 · 纠“唯冥想论”" "color" "#F0997B" "icon" "☸")
+  (dict "url" "/science-of-chan/" "title" "Science of Chan" "sub" "神经 · 心理证据链" "color" "#85B7EB" "icon" "⌬")
+  (dict "url" "/practice/" "title" "Practice · 修心" "sub" "可实操的观心方法" "color" "#5DCAA5" "icon" "❋")
+  (dict "url" "/platform-sutra/" "title" "Platform Sutra 坛经" "sub" "禅宗核心经典 · 公案 · 现代解读" "color" "#EF9F27" "icon" "卷")
+  (dict "url" "/journey/" "title" "Journey 脉络" "sub" "历史 · 禅与道儒" "color" "#B4B2A9" "icon" "↟")
+  (dict "url" "/demos/" "title" "Interactive Demos" "sub" "可交互认知实验" "color" "#97C459" "icon" "◈")
+}}
+
+<!-- Sticky nav -->
+<nav class="cz-nav">
+  <a href="/" class="cz-nav-brand">参禅 <span>canchan</span></a>
+  <div class="cz-nav-links">
+    {{ range $paths }}<a href="{{ .url }}">{{ .title }}</a>{{ end }}
+    <a href="/about/">About</a>
+  </div>
+</nav>
+
+<!-- Hero: the core distinction -->
+<header class="cz-hero">
+  <p class="cz-kicker">The Chinese source of Zen</p>
+  <h1 class="cz-hero-title">Chan is not Zen.</h1>
+  <p class="cz-hero-lead">
+    Zen is the Japanese pronunciation. Chan is the Chinese original — the living root
+    the West met only after it had already been trimmed, stylised, and renamed.
+    We go back to the source, and we read it with modern eyes.
+  </p>
+  <div class="cz-hero-cta">
+    <a href="/buddhism/" class="cz-btn cz-btn-primary">Start with Buddhism →</a>
+    <a href="/science-of-chan/" class="cz-btn cz-btn-ghost">Why science, not faith</a>
+  </div>
+</header>
+
+<!-- The correction: myth vs reality -->
+<section class="cz-correct">
+  <h2 class="cz-section-h">What the West got wrong</h2>
+  <div class="cz-split">
+    <div class="cz-card cz-card-myth">
+      <span class="cz-card-tag">The popular story</span>
+      <p>“Zen = sitting cross-legged, emptying the mind, a aesthetic of calm.”</p>
+      <p class="cz-muted">Meditation became the only part of Buddhism the West could de-religionise and fMRI-scan. The rest got left behind.</p>
+    </div>
+    <div class="cz-card cz-card-truth">
+      <span class="cz-card-tag cz-card-tag-truth">What Chan actually is</span>
+      <p>Chan is one school of a whole tradition. Meditation is one of <em>three trainings</em> (ethics, concentration, wisdom) — and in Chan, the real practice happens standing, walking, eating, arguing.</p>
+      <p class="cz-muted">Not “ Buddhism minus the religion.” The full architecture, read without the Japanese filter.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Science teaser — hook the rational reader -->
+<section class="cz-science">
+  <div class="cz-science-inner">
+    <h2 class="cz-section-h cz-light">We don't ask you to believe. We show you.</h2>
+    <p class="cz-science-lead">
+      No-self maps onto the brain's default mode network. Watching the breath reshapes
+      the amygdala. Insight has measurable neural correlates. Chan made these claims
+      fifteen hundred years before neuroscience could test them.
+    </p>
+    <a href="/science-of-chan/" class="cz-btn cz-btn-ghost cz-light">Read the evidence →</a>
+  </div>
+</section>
+
+<!-- Six paths -->
+<section class="cz-paths">
+  <h2 class="cz-section-h">Six ways in</h2>
+  <div class="cz-path-grid">
+    {{ range $paths }}
+    <a href="{{ .url }}" class="cz-path" style="--pc: {{ .color }}">
+      <span class="cz-path-icon">{{ .icon }}</span>
+      <span class="cz-path-title">{{ .title }}</span>
+      <span class="cz-path-sub">{{ .sub }}</span>
+    </a>
+    {{ end }}
+  </div>
+</section>
+
+<!-- Newsletter -->
+<section class="cz-news">
+  <h2 class="cz-section-h">Get new essays in your inbox</h2>
+  <p class="cz-muted">No app needed. The site is the hub; this list is yours. Unsubscribe anytime.</p>
+  <form class="cz-news-form" action="https://chansurf.substack.com/subscribe" method="post" target="_blank">
+    <input type="email" class="cz-news-input" placeholder="you@email.com" required />
+    <button type="submit" class="cz-btn cz-btn-primary">Subscribe</button>
+  </form>
+</section>
+
+{{ end }}

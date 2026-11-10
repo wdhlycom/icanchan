@@ -1,0 +1,29 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { ui, categoryZh, type Locale } from '../i18n/ui';
+
+interface Props {
+  entry: CollectionEntry<'articles'> | CollectionEntry<'articlesZh'>;
+  variant?: 'default' | 'hero';
+  showDescription?: boolean;
+  locale?: Locale;
+}
+
+const { entry, variant = 'default', showDescription = true, locale = 'en' } = Astro.props;
+const t = ui[locale];
+const base = locale === 'zh' ? '/zh' : '';
+const href = `${base}/series/buddhism-101/${entry.id}/`;
+const category = locale === 'zh' ? categoryZh[entry.data.category] ?? entry.data.category : entry.data.category;
+---
+
+<a href={href} class:list={['article-card', { 'hero-card': variant === 'hero' }]}>
+  <img class="thumb" src={entry.data.cover} alt={entry.data.title} loading="lazy" />
+  <span class="tag">
+    {category} · {locale === 'zh' ? `第 ${entry.data.chapter} 章` : `Chapter ${entry.data.chapter}`}
+  </span>
+  <h3>{entry.data.title}</h3>
+  {showDescription && <p>{entry.data.description}</p>}
+  <span class="card-meta">
+    {entry.data.readingTime} {t.minRead}
+  </span>
+</a>

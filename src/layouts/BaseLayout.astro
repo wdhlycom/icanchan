@@ -1,0 +1,83 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { type Locale } from '../i18n/ui';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  path?: string;
+  locale?: Locale;
+  /** 关闭语言互链（例如 404 这种没有对应译文的页面） */
+  noAlternates?: boolean;
+}
+
+const {
+  title,
+  description = 'Chan is the Chinese source of Zen. We read it with modern science, not faith.',
+  path = Astro.url.pathname,
+  locale = 'en',
+  noAlternates = false,
+} = Astro.props;
+
+const isZh = locale === 'zh';
+const rel = path === '/zh' || path.startsWith('/zh/') ? path.slice(3) || '/' : path;
+const enPath = rel;
+const zhPath = rel === '/' ? '/zh/' : `/zh${rel}`;
+
+const canonical = new URL(path, Astro.site).toString();
+const fullTitle =
+  title === 'Chan'
+    ? isZh
+      ? 'Chan — 禅，Zen 的中国源头'
+      : 'Chan — the Chinese source of Zen'
+    : `${title} · Chan`;
+---
+
+<!doctype html>
+<html lang={isZh ? 'zh' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Hu" />
+    <link rel="canonical" href={canonical} />
+    {!noAlternates && <link rel="alternate" hreflang="en" href={new URL(enPath, Astro.site)} />}
+    {!noAlternates && <link rel="alternate" hreflang="zh" href={new URL(zhPath, Astro.site)} />}
+    {!noAlternates && <link rel="alternate" hreflang="x-default" href={new URL(enPath, Astro.site)} />}
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Chan" href="/rss.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Chan" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={isZh ? 'zh_CN' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var dark = saved
+            ? saved === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body id="top">
+    <Header locale={locale} />
+    <main data-pagefind-body>
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

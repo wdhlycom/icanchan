@@ -1,0 +1,32 @@
+# Netlify CMS Configuration
+backend:
+  name: github
+  repo: your-username/your-repo-name # 替换为实际仓库地址
+  branch: main
+
+media_folder: static/images
+public_folder: /images
+
+collections:
+  - name: "blog"
+    label: "Blog Posts"
+    folder: content/series/buddhism-101
+    create: true
+    fields:
+      - { label: "Title", name: "title", widget: string }
+      - { label: "Description", name: "description", widget: string }
+      - { label: "Date", name: "date", widget: date, format: "YYYY-MM-DD" }
+      - { label: "Series", name: "series", widget: string }
+      - { label: "Chapter", name: "chapter", widget: number }
+      - { label: "Image", name: "image", widget: string }
+      - { label: "Reading Time", name: "reading_time", widget: number }
+      - { label: "Tags", name: "tags", widget: list }
+
+  - name: "guestbook"
+    label: "Guestbook Entries"
+    folder: content/guestbook
+    create: true
+    fields:
+      - { label: "Name", name: "name", widget: string }
+      - { label: "Email", name: "email", widget: string }
+      - { label: "Message", name: "message", widget: markdown }

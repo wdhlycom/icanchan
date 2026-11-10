@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { categoryZh } from '../../../../i18n/ui';
+
+const articles = (await getCollection('articlesZh', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.chapter - b.data.chapter,
+);
+---
+
+<BaseLayout
+  locale="zh"
+  title="佛学入门 101"
+  description="三十章，从第一个真相走到一张用得上的心智地图。"
+  path="/zh/series/buddhism-101/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>佛学入门 101</h1>
+      <p>从大多数人所在的地方起笔：日子看着还行，却总像缺了一块。末了交出一张用得上的地图。</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="chapter-list">
+      {articles.map((entry) => (
+        <a class="chapter-row" href={`/zh/series/buddhism-101/${entry.id}/`}>
+          <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+          <span class="ttl">{entry.data.title}</span>
+          <span class="meta">
+            {categoryZh[entry.data.category] ?? entry.data.category} · {entry.data.readingTime} 分钟
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
