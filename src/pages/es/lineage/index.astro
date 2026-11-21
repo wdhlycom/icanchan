@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+/* 与中文「源流」、英文 About 同一套设置：真页 + 页脚直指 + 作者说明卡在这里落脚。
+   西语站是节译，没有祖师传与法脉年表，所以不搬那部分长篇史料，只写「这个站是什么、谁在写」。 */
+const boundaries = [
+  'No es una religión. Aquí no hay ni una frase que te pida creer.',
+  'No es un curso de meditación. La práctica es una de las tres disciplinas, no todas.',
+  'No es una traducción del Zen japonés. Donde Chan y Zen se separan, lo decimos.',
+  'No es un certificado de linaje. Esta página habla de ideas y de procedencia, no de sucesión.',
+];
+
+const readings = [
+  {
+    zh: '我参禅',
+    es: 'Participo en Chan.',
+    body: 'La lectura más llana. No «creo en Chan»: Chan no es algo en lo que se crea. Uno se sienta, mira y comprueba. Primero la participación, después la evidencia.',
+  },
+  {
+    zh: '我能禅',
+    es: 'Puedo practicar Chan.',
+    body: 'La afirmación que hay debajo. Es una capacidad, no un carné: no está reservada a los monjes ni a quienes «tiene buen ojo». Basta con querer mirar la propia mente.',
+  },
+  {
+    zh: '禅即日用',
+    es: 'Chan es de lo que está hecho el día.',
+    body: 'La consecuencia. Si solo funciona sobre el cojín, no funciona. Fregar los platos, responder un correo, quedarse con alguien que está triste: lo mismo, otra postura.',
+  },
+];
+---
+
+<BaseLayout
+  locale="es"
+  title="Origen"
+  description="Por qué existe este sitio, de dónde viene el nombre y quién escribe. Chan es la fuente china del Zen; el budismo no cabe en un cojín."
+  path="/es/lineage/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Origen</h1>
+      <p>De dónde viene esto, y quién lo escribe.</p>
+    </div>
+    <img
+      class="page-head-banner"
+      src="/assets/page-head-lineage.jpg"
+      alt="Un arroyo baja entre montañas que se pierden en la distancia, a tinta"
+    />
+  </section>
+
+  <section class="section container">
+    <div class="reading">
+      <p class="lead-serif">
+        Chan es la fuente china de lo que Occidente llama Zen. No su rival: su origen.
+      </p>
+      <p class="body-copy">
+        Cuando Chan llegó a Japón en el siglo XII se convirtió en Zen: más refinado, más formal, más
+        estético. La ceremonia del té, el jardín de piedras, la reverencia — inventos japoneses,
+        precisos y hermosos. Pero son la rama. La raíz se quedó en China, en una tradición más seca,
+        menos teatral y mucho más interesada en ver que en parecer sabia.
+      </p>
+      <p class="body-copy">
+        Lo que recibió el mundo de habla inglesa fue, sobre todo, esa rama envuelta en misterio:
+        incienso, túnicas, acertijos. La meditación fue la única parte que se pudo separar de la
+        religión y meter en un laboratorio. Todo lo demás se quedó fuera, en silencio.
+      </p>
+      <p class="body-copy">
+        Este sitio devuelve lo que faltaba: las tres disciplinas, la historia, las discusiones, el
+        texto mismo — y la práctica, que en Chan sucede de pie, caminando, comiendo y discutiendo,
+        no solo sentado. No pedimos fe. Pedimos que se mire, y que se compruebe.
+      </p>
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="reading">
+      <span class="eyebrow">Quién escribe</span>
+      <h2 class="sec-h">No soy sucesor de nadie.</h2>
+      <p class="body-copy">
+        No recibí un certificado de linaje. Ningún maestro me llamó de noche a su celda para
+        preguntarme cómo era mi rostro antes de que nacieran mis padres. No pasé un retiro de siete
+        días en un monasterio, y no voy a decir que he despertado.
+      </p>
+      <p class="body-copy">
+        Lo que puedo poner encima de la mesa es esto: estos textos los leí, estas sentadas las hice,
+        estas palabras me hicieron efecto en mi propia vida. Por eso esta página no habla de
+        sucesión, habla de procedencia: alguien que está aguas abajo remonta el río y señala cada
+        tramo. Soy uno de los que beben de ese río, no su heredero.
+      </p>
+      <p class="body-copy">
+        Crecí en China sin religión y con una afición persistente por el pensamiento budista. Leo los
+        clásicos; no voy a los templos a inclinarme. De todas las tradiciones que he leído, el
+        budismo es la que más respeto, porque no exige creer: pide pensar. Eso encaja mejor con una
+        mente educada en la ciencia que el fervor de cualquiera de los dos bandos.
+      </p>
+
+      <ul class="confession">
+        <li>
+          <span class="cf-label">Lo que recibí</span>
+          <span class="cf-body">Textos · métodos · preguntas</span>
+        </li>
+        <li>
+          <span class="cf-label">Lo que no recibí</span>
+          <span class="cf-body">Linaje · ritual · maestro</span>
+        </li>
+        <li>
+          <span class="cf-label">Lo que no finjo haber recibido</span>
+          <span class="cf-body">Despertar · confirmación · poderes</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="domain-block">
+    <div class="container">
+      <div class="reading" style="text-align:center">
+        <img class="domain-glyph" src="/assets/chan-logo.png" alt="" aria-hidden="true" />
+        <span class="eyebrow">El nombre</span>
+        <h2 class="serif" style="font-size:clamp(30px,4vw,42px);margin:14px 0 18px">I can chan.</h2>
+        <p class="body-copy" style="font-size:17px">
+          El dominio es una frase, no una marca. Leída de tres maneras, da el sitio entero.
+        </p>
+      </div>
+
+      <div class="domain-rows">
+        {readings.map((r) => (
+          <div class="domain-row">
+            <span class="zh-line">{r.zh}</span>
+            <span class="en-line">{r.es}</span>
+            <p>{r.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="domain-coda">
+        <p>到最后，无我、无参、也无禅。</p>
+        <p>
+          Ahí se acaba la frase. La cuestión nunca fue volverse bueno en Chan, sino dejar que todo
+          esto se disuelva en la vida corriente hasta que no quede nadie practicando, ninguna
+          práctica que cumplir y nada a lo que llamar Chan. Solo el día, bien hecho.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="reading">
+      <h2 class="sec-h">Lo que esto no es</h2>
+      <ul class="pillar-list" style="margin-top:20px">
+        {boundaries.map((b) => <li>{b}</li>)}
+      </ul>
+      <p class="body-copy" style="margin-top:28px">
+        Si algo de esta página está mal, dímelo y lo corrijo. Es lo único que la hace más fiable que
+        un certificado de linaje.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

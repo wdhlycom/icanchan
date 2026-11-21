@@ -1,0 +1,102 @@
+export type Locale = 'en' | 'zh' | 'es';
+
+export const locales: Locale[] = ['en', 'zh', 'es'];
+
+export const langTag: Record<Locale, string> = { en: 'en', zh: 'zh', es: 'es' };
+
+export const ui = {
+  en: {
+    nav: [
+      { href: '/buddhism/', label: 'Buddhism' },
+      { href: '/science-of-chan/', label: 'Science' },
+      { href: '/essays/', label: 'Chan & Life' },
+      { href: '/koans/', label: 'Koans' },
+      { href: '/series/', label: 'Series' },
+      { href: '/platform-sutra/', label: 'Sutra' },
+      { href: '/lineage/', label: 'Lineage' },
+      { href: '/about/', label: 'About' },
+    ],
+    searchPlaceholder: 'Search',
+    themeToDark: 'Switch to dark',
+    themeToLight: 'Switch to light',
+    langOther: '中文',
+    langOtherHref: '/zh/',
+    home: 'Home',
+    about: 'About',
+    aboutHref: '/about/',
+    backToTop: 'Back to top',
+    footerNav: 'Footer',
+    chapter: 'Chapter',
+    minRead: 'min read',
+    previous: 'Previous',
+    next: 'Next',
+    searchTitle: 'Search',
+    searchKicker: 'Look something up',
+    searchLead: 'Runs entirely in your browser on a static index. No account, nothing sent anywhere.',
+  },
+  zh: {
+    nav: [
+      { href: '/buddhism/', label: '佛学基础' },
+      { href: '/science-of-chan/', label: '禅科学' },
+      { href: '/essays/', label: '禅生活' },
+      { href: '/koans/', label: '公案' },
+      { href: '/series/', label: '专题' },
+      { href: '/platform-sutra/', label: '坛经' },
+      { href: '/lineage/', label: '源流' },
+    ],
+    searchPlaceholder: '搜索',
+    themeToDark: '切换到深色',
+    themeToLight: '切换到浅色',
+    langOther: 'EN',
+    langOtherHref: '/',
+    home: '首页',
+    about: '源流',
+    aboutHref: '/lineage/',
+    backToTop: '回到顶部',
+    footerNav: '页脚',
+    chapter: '第',
+    minRead: '分钟',
+    previous: '上一篇',
+    next: '下一篇',
+    searchTitle: '搜索',
+    searchKicker: '站内检索',
+    searchLead: '搜索在自己的浏览器里完成，不用登录，也不上传任何内容。',
+  },
+  es: {
+    nav: [
+      { href: '/', label: 'Inicio' },
+      { href: '/buddhism/', label: 'Budismo' },
+      { href: '/essays/', label: 'Ensayos' },
+      { href: '/lineage/', label: 'Origen' },
+    ],
+    searchPlaceholder: 'Buscar',
+    themeToDark: 'Cambiar a oscuro',
+    themeToLight: 'Cambiar a claro',
+    langOther: '中文',
+    langOtherHref: '/zh/',
+    home: 'Inicio',
+    about: 'Origen',
+    aboutHref: '/lineage/',
+    backToTop: 'Volver arriba',
+    footerNav: 'Pie de página',
+    chapter: 'Capítulo',
+    minRead: 'min',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    searchTitle: 'Buscar',
+    searchKicker: 'Busca algo',
+    searchLead: 'Funciona en tu navegador sobre un índice estático. Sin cuenta, nada se envía a ningún lado.',
+  },
+} as const;
+
+export const categoryZh: Record<string, string> = {
+  Foundations: '基础',
+  History: '历史',
+  'Platform Sutra': '坛经',
+  'Chan & Dao': '禅与道',
+  Practice: '修行',
+  Science: '科学',
+  Review: '回顾',
+};
+
+export const t = (locale: Locale) => ui[locale];

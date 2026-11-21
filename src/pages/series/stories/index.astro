@@ -1,0 +1,37 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = (
+  await getCollection('articles', ({ data }) => !data.draft && isPublished(data) && data.series === 'stories')
+).sort((a, b) => a.data.chapter - b.data.chapter);
+---
+
+<BaseLayout
+  title="Stories"
+  description="Su Dongpo, Wang Wei, Bai Juyi, Huang Tingjian — officials who ran a province by day and sat with Chan at night."
+  path="/series/stories/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Stories</h1>
+      <p>People who had real jobs, real setbacks, and a practice that had to survive both.</p>
+    </div>
+  </section>
+
+  {articles.length > 0 ? (
+    <section class="page-body container">
+      <div class="chapter-list">
+        {articles.map((entry) => (
+          <a class="chapter-row" href={`/series/stories/${entry.id}/`}>
+            <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+            <span class="ttl">{entry.data.title}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  ) : (
+    <p class="section-empty">Nothing is published in this series yet.</p>
+  )}
+</BaseLayout>

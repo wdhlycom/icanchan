@@ -1,0 +1,85 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articles', ({ data }) => !data.draft && isPublished(data) && data.series === 'masters');
+const byId = new Map(articles.map((a) => [a.id, a]));
+
+/* Lineage order. */
+const lineage = [
+  { name: 'The Buddha', id: 'masters-04-buddha' },
+  { name: 'Bodhidharma', id: 'masters-01-bodhidharma' },
+  { name: 'Huike', id: 'masters-05-huike' },
+  { name: 'Sengcan', id: 'masters-06-sengcan' },
+  { name: 'Daoxin', id: 'masters-07-daoxin' },
+  { name: 'Hongren', id: 'masters-08-hongren' },
+  { name: 'Huineng', id: 'masters-09-huineng' },
+  { name: 'After Huineng', id: 'masters-02-huineng-legacy' },
+  { name: 'The Five Houses', id: 'masters-03-five-houses' },
+  { name: 'Xuyun', id: 'masters-10-xuyun' },
+];
+---
+
+<BaseLayout
+  title="The Patriarchs"
+  description="From a flower held up on Vulture Peak to Xuyun — one patriarch per piece, read in lineage order."
+  path="/series/masters/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>The Patriarchs</h1>
+      <p>One patriarch, one piece. No chronology — only what each one changed along the line.</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <ol class="pin-list">
+      {lineage.map((p) => {
+        const entry = p.id ? byId.get(p.id) : null;
+        return (
+          <li class:list={['pin', { 'is-todo': !entry }]}>
+            <div>
+              <span class="pin-name">{p.name}</span>
+              {entry ? (
+                <span class="pin-links">
+                  <a href={`/series/masters/${entry.id}/`}>{entry.data.title} →</a>
+                </span>
+              ) : (
+                <span class="pin-count">Being written</span>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+</BaseLayout>
+
+<style>
+  .pin-list { list-style: none; padding: 0; margin: 0; }
+  .pin > div {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 18px;
+    align-items: baseline;
+    padding: 16px 12px;
+  }
+  .pin-name { font-family: var(--serif); font-size: 22px; letter-spacing: 0.01em; }
+  .pin-count { font-size: 11px; letter-spacing: 0.12em; color: var(--faint); white-space: nowrap; }
+  .pin.is-todo .pin-name { color: var(--faint); opacity: 0.62; }
+  .pin-links { display: flex; flex-direction: column; gap: 6px; }
+  .pin-links a {
+    font-size: 14px;
+    color: var(--gold-dark);
+    border-bottom: 1px solid var(--gold-light);
+    padding-bottom: 1px;
+    width: fit-content;
+    transition: border-color 0.25s;
+  }
+  .pin-links a:hover { border-color: var(--gold); }
+  @media (max-width: 900px) {
+    .pin > div { grid-template-columns: 1fr; gap: 6px; }
+    .pin-count, .pin-links { grid-column: 1; }
+  }
+</style>

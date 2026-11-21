@@ -1,0 +1,57 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const all = (
+  await getCollection('essaysEs', ({ data }) => !data.draft && isPublished(data))
+).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+const daily = all.filter((e) => e.data.section === 'zen-life');
+const legacy = all.filter((e) => e.data.section !== 'zen-life');
+---
+
+<BaseLayout
+  locale="es"
+  title="Ensayos"
+  description="Chan en la vida diaria: treinta y cinco lecturas cortas sobre lo que pasa entre el cojín y el resto del día."
+  path="/es/essays/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Chan en la vida diaria</h1>
+      <p>Treinta y cinco lecturas cortas sobre lo que pasa entre el cojín y el resto del día.</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="article-grid">
+      {daily.map((entry) => (
+        <a class="article-card" href={`/es/essays/${entry.id}/`}>
+          <img class="thumb" src={entry.data.cover} alt={entry.data.title} loading="lazy" />
+          <span class="tag">{entry.data.category}</span>
+          <h3>{entry.data.title}</h3>
+          <span class="card-meta">{entry.data.readingTime} min</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {legacy.length > 0 && (
+    <section class="section container divider-top">
+      <div class="paths-intro" style="margin-bottom:32px">
+        <h2>Lecturas anteriores</h2>
+        <p>Las primeras seis piezas en español siguen aquí, con su propia dirección.</p>
+      </div>
+      <ul class="read-index">
+        {legacy.map((entry) => (
+          <li>
+            <a href={`/es/essays/${entry.id}/`}>
+              <span class="ttl">{entry.data.title}</span>
+              <span class="meta">{entry.data.category} · {entry.data.readingTime} min</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</BaseLayout>

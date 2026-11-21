@@ -1,0 +1,81 @@
+---
+import { isPublished } from '../lib/publish';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { sections, type Section } from '../data/sections';
+
+export function getStaticPaths() {
+  /* 三个板块都已有独立页面：佛学基础、禅科学、坛经。
+     这一动态路由保留给以后新增的板块。 */
+  return sections
+    .filter(
+      (section) =>
+        section.slug !== 'buddhism' &&
+        section.slug !== 'science-of-chan' &&
+        section.slug !== 'platform-sutra'
+    )
+    .map((section) => ({
+      params: { section: section.slug },
+      props: { section },
+    }));
+}
+
+interface Props {
+  section: Section;
+}
+
+const { section } = Astro.props;
+
+/* 英文 30 篇连载的 section 字段是旧分类：历史、禅与道、回顾都记在 journey 下。
+   主页四门只有四个落点，journey 的 11 章并进 Buddhism，跟中文「佛学基础」含整条入门之路一致。 */
+const sectionGroups: Record<string, string[]> = {
+  buddhism: ['buddhism', 'journey'],
+  'science-of-chan': ['science-of-chan'],
+  'platform-sutra': ['platform-sutra'],
+};
+
+const articles = await getCollection(
+  'articles',
+  ({ data }) =>
+    !data.draft && isPublished(data) && (sectionGroups[section.slug] ?? []).includes(data.section)
+);
+const chapters = articles.sort((a, b) => a.data.chapter - b.data.chapter);
+---
+
+<BaseLayout title={section.title} description={section.description} path={`/${section.slug}/`}>
+  <section class="page-head">
+    <div class="container">
+      <h1>{section.title}</h1>
+      <p>{section.description}</p>
+    </div>
+  </section>
+
+  <section class="container" style="padding:64px 0 0">
+    <img class="article-cover" src={section.cover} alt="" style="margin-bottom:0" />
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>{chapters.length > 0 ? 'Chapters' : 'Being written'}</h2>
+    </div>
+
+    {chapters.length > 0 ? (
+      <ul class="read-index">
+        {chapters.map((entry) => (
+          <li>
+            <a href={`/series/buddhism-101/${entry.id}/`}>
+              <span class="ttl">
+                {String(entry.data.chapter).padStart(2, '0')} · {entry.data.title}
+              </span>
+              <span class="meta">{entry.data.category} · {entry.data.readingTime} min</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="section-empty">
+        Nothing is published here yet. When it is, it will live on this page and nowhere else.
+      </p>
+    )}
+  </section>
+</BaseLayout>

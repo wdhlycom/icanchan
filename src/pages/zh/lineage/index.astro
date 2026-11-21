@@ -1,0 +1,369 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { isPublished } from '../../../lib/publish';
+
+/* 祖师传按周逐篇出现；还没到的先指到专题目录，免得点进去是空页 */
+const masters = await getCollection(
+  'articlesZh',
+  ({ data }) => !data.draft && isPublished(data) && data.series === 'masters'
+);
+const masterUrl = (id) =>
+  masters.some((m) => m.id === id) ? `/zh/series/masters/${id}/` : '/zh/series/masters/';
+
+/* 年表：写了专篇的挂链接（祖师传/故事专题），连载体量更大用章号标注，不重复收录 */
+const timeline = [
+  { when: '约前 5 世纪', what: '佛陀入灭', note: '八十岁，在拘尸那迦的两棵娑罗树之间。遗言是「不要放逸」。', ch: 8 },
+  { when: '约前 3 世纪', what: '阿育王与部派分裂', note: '佛教从恒河流域走出去，同时开始分裂。第一次结集之后，口径就再也统一不了。', ch: 9 },
+  { when: '约 1 世纪', what: '大乘兴起', note: '「空」被推到前台。这是一次重新解释，不是一次继承——上座部至今不承认它是佛说。', ch: 11 },
+  { when: '约 1 世纪', what: '佛教入华', note: '经西域来。头两百年，中国人用道家的词汇理解它，叫作「格义」。', ch: 12 },
+  { when: '约 520', what: '达摩到广州', note: '见梁武帝，四句话不投机，渡江北上，面壁九年。', href: masterUrl('masters-01-bodhidharma'), linkLabel: '读：达摩 →' },
+  { when: '638–713', what: '慧能', note: '一个卖柴的人。他不识字，却把整个佛教的重心从「出离」挪到了「当下」。', href: masterUrl('masters-02-huineng-legacy'), linkLabel: '读：慧能之后 →' },
+  { when: '8–9 世纪', what: '五家成形', note: '临济的棒、曹洞的默、沩仰的圆相、云门的三个字、法眼的六相。同一颗心，五种打法。', href: masterUrl('masters-03-five-houses'), linkLabel: '读：五家 →' },
+  { when: '845', what: '会昌法难', note: '唐武宗灭佛。靠寺院经济和皇室供养的宗派垮了大半；在山上种地的禅宗活了下来。', ch: 13 },
+  { when: '10–13 世纪', what: '公案与文字禅', note: '禅开始记录自己。《景德传灯录》《碧岩录》——「不立文字」的宗派，留下了最多的文字。', ch: 18 },
+  { when: '12 世纪', what: '传入日本', note: '荣西带回去临济，道元带回去曹洞。今天西方人说的「Zen」，多是这一支的后代。' },
+];
+
+const patriarchs = [
+  { gen: '初祖', who: '达摩', line: '把「看」提到第一位。不立文字不是反对文字，是说文字到不了那儿。', href: masterUrl('masters-01-bodhidharma') },
+  { gen: '二祖', who: '慧可', line: '立雪断臂是后来的传说，但那句话是真的——「觅心了不可得」。心找不到，所以安了。' },
+  { gen: '三祖', who: '僧璨', line: '《信心铭》开头一句：「至道无难，唯嫌拣择。」难不在道上，在人老想挑。' },
+  { gen: '四祖', who: '道信', line: '一行三昧。把修行从山林拉到几百人同住的聚落，禅宗从这里开始有组织。' },
+  { gen: '五祖', who: '弘忍', line: '东山法门，农禅并作——吃饭靠自己种。这一条在会昌法难时救了整个宗派。' },
+  { gen: '六祖', who: '慧能', line: '一个卖柴的、几乎不识字的人，把佛教的重心从「出离」挪到了「当下」。' },
+];
+
+const modern = [
+  { who: '太虚', years: '1890–1947', line: '人间佛教。「仰止唯佛陀，完成在人格。」把修行从死后挪回此生。' },
+  { who: '来果', years: '1881–1953', line: '高旻寺。中国最严的禅堂规矩，禅七制度的守夜人。' },
+  { who: '圣严', years: '1930–2009', line: '法鼓山，「中华禅」。最早用现代学术语言把汉传禅讲给西方听的中国僧人之一。' },
+  { who: '一行', years: '1926–2022', line: '越南，临济法脉。西方接触到的禅，一半从他这一路来。' },
+  { who: '铃木大拙', years: '1870–1966', line: '不算法脉，是译介者。西方接住的 Zen 是他塑造的版本——这笔账要单独记。' },
+];
+
+const boundaries = [
+  '不是宗教。这里没有一句话要求人信。',
+  '不是冥想课。修行只占三学里的三分之一。',
+  '不是日本禅的译述。两边不一样的地方，会说出来。',
+  '不是法脉认证。这一页讲的是思想谱系，不是传法世系。',
+];
+---
+
+<BaseLayout
+  locale="zh"
+  title="源流"
+  description="从灵山的一枝花，到嵩山的一堵墙，再到此刻读它的一个人。这是一条线的来路，包括它断在哪儿。"
+  path="/zh/lineage/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>源流</h1>
+      <p>往上找源头，一路指过去。</p>
+    </div>
+    <img class="page-head-banner" src="/assets/page-head-lineage.jpg" alt="层叠远山之间，一道溪水从山谷里流下来" />
+  </section>
+
+  <section class="section container" style="padding-top:28px">
+    <div class="reading">
+      <h2 class="sec-h">一枝花，一个人，一路向西</h2>
+      <p class="body-copy">
+        <b>西天</b>。灵山会上，佛陀拈起一枝花，一言不发。迦叶破颜一笑。整个禅宗就从这一笑开始——按它自己的说法。
+      </p>
+      <p class="body-copy">
+        得说清楚：这个故事最早的完整记载，出现在北宋的《天圣广灯录》与《联灯会要》，距佛陀入灭约一千五百年。更早的经里没有。
+      </p>
+      <p class="body-copy">
+        所以它不是史实，是一次自我说明。宋代禅宗要向人解释：我们这套不立文字、不拜经的活法，凭什么是从佛那里来的。那枝花，就是回答。
+      </p>
+      <p class="body-copy">
+        西天二十八祖的谱系同样出自宋人编的灯录。印度那一段可考程度很低——印顺在《中国禅宗史》里就认为，这条线是为了接上法统而建构的。柳田圣山清理得更彻底。
+      </p>
+      <p class="pull-line">故事照讲，出处标清。一个传统如果连自己的来历都敢拿出来检查，它才值得信。</p>
+      <p class="body-copy">
+        约 520 年，一个南印度来的和尚在广州上了岸。见梁武帝，四句话不投机，渡江北上，在嵩山面壁九年。他留下的法门只有两个字：<b>壁观</b>。不是玄学，就是一个动作——面朝墙坐着，看。
+      </p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:36px">
+      <h2>六个人，六次改动</h2>
+      <p><b>东土</b>。不写生平。只说每个人把这件事往哪儿推了一寸。写好的名字可点进专篇；没写到的排在专题 · 祖师传里。</p>
+    </div>
+
+    <ol class="pat-list">
+      {patriarchs.map((p) => (
+        <li>
+          <span class="pat-gen">{p.gen}</span>
+          {p.href ? (
+            <a class="pat-who pat-link" href={p.href}>{p.who}</a>
+          ) : (
+            <span class="pat-who">{p.who}<span class="pat-todo">专篇待写</span></span>
+          )}
+          <span class="pat-line">{p.line}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:36px">
+      <h2>一千年，几个转弯</h2>
+    </div>
+    <p class="timeline-note">
+      <b>之后</b>。年代都是约数。早期佛教的口传传统长达数百年，第一次写下来已在公元前一世纪——所以「佛陀哪年说的」这个问题，学界的答案本身就是一段争论。
+    </p>
+
+    <ol class="timeline">
+      {timeline.map((t) => (
+        <li class="tl-item">
+          <span class="tl-when">{t.when}</span>
+          <div class="tl-body">
+            <h3 class="tl-what">{t.what}</h3>
+            <p class="tl-note">{t.note}</p>
+            <div class="tl-links">
+              {t.href && <a href={t.href}>{t.linkLabel}</a>}
+              {t.ch && <span class="tl-ch">入门之路 · 第 {t.ch} 章</span>}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="reading">
+      <h2 class="sec-h">虚云，与那道断口</h2>
+      <p class="body-copy">
+        <b>近现代</b>。虚云（1840–1959）。一个人承了五家的法脉——临济、曹洞、沩仰、云门、法眼，一身兼祧。重修六祖道场南华寺、云门寺，把断了的那一脉又接上。
+      </p>
+      <p class="body-copy">
+        关于他的年岁与神通，传说很多，这里不转述。他重要不是因为那些，是因为在那样的年代里，他让这条线没有断在二十世纪。
+      </p>
+      <p class="body-copy">
+        但得接着说另一面。二十世纪中叶之后，汉传佛教的法脉制度整体崩解过一次：寺院被占、僧团解散、传法中断。后来恢复的，一部分是真接上了，一部分是补办的。
+      </p>
+      <p class="body-copy">
+        所以「接法卷」这件事，今天更多是一种制度性的继承资格。它证明的是「谁承认你」，不是「你到了哪儿」。这句话对这条线同样成立——凡是拿法卷当开悟证书的说法，都不必信。
+      </p>
+    </div>
+
+    <ul class="modern-list">
+      {modern.map((m) => (
+        <li>
+          <span class="md-who">{m.who}</span>
+          <span class="md-years">{m.years}</span>
+          <span class="md-line">{m.line}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="domain-block">
+    <div class="container">
+      <div class="reading">
+        <p class="body-copy">
+          我没接过法卷。没有师父在深夜把我叫进丈室，问一句「如何是父母未生前本来面目」。没在禅堂里挨过香板，没住满一个禅七，也不打算宣称自己开悟了。
+        </p>
+        <p class="body-copy">
+          我能拿出来的是这些：这些字我读过，这些坐我坐过，这些话在我身上起过作用。所以这一页不叫「传承」，叫「来路」——一个人站在下游，往上游走一遍，把每一段指出来。
+        </p>
+
+        <ul class="confession">
+          <li>
+            <span class="cf-label">我接到的</span>
+            <span class="cf-body">文本 · 方法 · 问题</span>
+          </li>
+          <li>
+            <span class="cf-label">我接不到的</span>
+            <span class="cf-body">法卷 · 仪轨 · 师承</span>
+          </li>
+          <li>
+            <span class="cf-label">我不假装接到的</span>
+            <span class="cf-body">开悟 · 印证 · 神通</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="reading" style="text-align:center;margin-top:64px">
+        <img class="domain-glyph" src="/assets/chan-logo.png" alt="" aria-hidden="true" />
+        <h2 class="serif" style="font-size:clamp(30px,4vw,42px);margin:14px 0 18px">我不是谁的传人。</h2>
+        <p class="body-copy" style="font-size:17px;text-wrap:balance">
+          <b>到我这里</b>。我是这条河下游一个喝水的人。剩下这三行，是这个站的域名，也是我全部的主张。
+        </p>
+      </div>
+
+      <div class="domain-rows">
+        <div class="domain-row">
+          <span class="zh-line">我参禅</span>
+          <span class="en-line">I take part in Chan.</span>
+          <p>最朴素的读法。不是「我信禅」——禅不是拿来信的。先坐下来看，再要证据。</p>
+        </div>
+        <div class="domain-row">
+          <span class="zh-line">我能禅</span>
+          <span class="en-line">I am able to Chan.</span>
+          <p>
+            第二层才是主张：这是一种能力，不是身份。不专给僧人，也不专给有慧根的人。肯回头看一眼自己的心，就算数。
+          </p>
+        </div>
+        <div class="domain-row">
+          <span class="zh-line">禅即日用</span>
+          <span class="en-line">Chan is what the day is made of.</span>
+          <p>
+            结论在这儿：只在蒲团上管用，就等于不管用。洗碗、回邮件、陪一个难过的人坐着，都是同一件事，只是姿势不同。
+          </p>
+        </div>
+      </div>
+
+      <div class="domain-coda">
+        <p>到最后，无我、无参、也无禅。</p>
+        <p>
+          从来不是要把禅练好，是让它化进日子里——化到没有一个「我」在做，没有一套功夫要摆，也没有一样东西还叫禅。无我，无参，无禅，只剩这一天，好好过完。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="reading">
+      <h2 class="sec-h">这条线，不是什么</h2>
+      <ul class="pillar-list" style="margin-top:20px">
+        {boundaries.map((b) => <li>{b}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="reading">
+      <h2 class="sec-h">想自己核一遍，从这三本起</h2>
+      <ul class="ref-list">
+        <li>
+          <span class="rf-t">印顺《中国禅宗史》</span>
+          <span class="rf-n">谱系批判最扎实的一本。他把灯录当史料处理，不当圣物。</span>
+        </li>
+        <li>
+          <span class="rf-t">柳田圣山《初期禅宗史书之研究》</span>
+          <span class="rf-n">灯录是怎么一层层编出来的。日文学术，中译本难找，可先读他的普及本。</span>
+        </li>
+        <li>
+          <span class="rf-t">葛兆光《中国禅思想史》</span>
+          <span class="rf-n">从思想史的角度看，不护教。适合想知道「当时人到底在争什么」的读者。</span>
+        </li>
+      </ul>
+      <p class="body-copy" style="margin-top:28px">
+        这一页凡有错，指出来我就改。这是它唯一比法卷可靠的地方。
+      </p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:36px">
+      <h2>每位祖师，一篇</h2>
+      <p>这条线里的每一位，都会在「专题 · 祖师传」里有一篇专篇。达摩、慧能之后、五家已经写好，其余在谱系里排队。</p>
+    </div>
+    <p style="max-width:880px;margin:0 auto">
+      <a class="btn btn-ghost" href="/zh/series/masters/">打开祖师传 →</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .sec-h { font-size: clamp(28px, 3.8vw, 38px); margin: 14px 0 26px; line-height: 1.28; }
+  .pull-line {
+    font-family: var(--zh-head);
+    font-size: clamp(21px, 2.6vw, 26px);
+    line-height: 1.85;
+    letter-spacing: 0.04em;
+    color: var(--forest);
+    padding: 24px 28px;
+    border: 1px dashed var(--gold);
+    border-radius: 12px;
+    margin: 40px 0;
+  }
+
+  .confession { list-style: none; padding: 0; margin: 44px 0 0; display: grid; gap: 20px; }
+  .confession li { display: grid; grid-template-columns: 148px 1fr; gap: 20px; align-items: baseline; }
+  .cf-label { font-size: 12px; letter-spacing: 0.16em; color: var(--gold-dark); }
+  .cf-body { font-family: var(--zh-head); font-size: 20px; letter-spacing: 0.05em; line-height: 1.6; }
+
+  .pat-list { list-style: none; padding: 0; margin: 0 auto; max-width: 880px; display: grid; gap: 34px; }
+  .pat-list li { display: grid; grid-template-columns: 58px 76px 1fr; gap: 6px 24px; align-items: baseline; }
+  .pat-gen { font-size: 11.5px; letter-spacing: 0.14em; color: var(--faint); }
+  .pat-who { font-family: var(--zh-head); font-size: 25px; letter-spacing: 0.06em; color: var(--forest); }
+  .pat-link { color: var(--forest); border-bottom: 1px solid var(--gold-light); transition: color 0.25s, border-color 0.25s; }
+  .pat-link:hover { color: var(--gold-dark); border-color: var(--gold); }
+  .pat-todo { font-size: 11px; letter-spacing: 0.1em; color: var(--faint); margin-left: 10px; }
+  .pat-line { font-size: 16px; line-height: 1.95; color: var(--body-text); }
+
+  .timeline-note {
+    max-width: 780px;
+    margin: 0 auto 52px;
+    padding: 16px 20px;
+    border: 1px dashed var(--gold-light);
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.95;
+    color: var(--muted);
+  }
+  .timeline { list-style: none; padding: 0; margin: 0 auto; max-width: 880px; position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 118px;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+    background-image: linear-gradient(to bottom, var(--divider) 42%, transparent 0);
+    background-size: 1px 7px;
+  }
+  .tl-item { display: grid; grid-template-columns: 104px 1fr; gap: 34px; padding: 0 0 44px; position: relative; }
+  .tl-item::after {
+    content: '';
+    position: absolute;
+    left: 115px;
+    top: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 5px var(--paper);
+  }
+  .tl-when { font-size: 12px; letter-spacing: 0.1em; color: var(--gold-dark); text-align: right; padding-top: 3px; line-height: 1.7; }
+  .tl-body { padding-left: 2px; }
+  .tl-what { font-size: 24px; margin-bottom: 8px; letter-spacing: 0.04em; }
+  .tl-note { font-size: 15.5px; line-height: 1.9; color: var(--muted); margin-bottom: 10px; }
+  .tl-links { display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline; }
+  .tl-links a { font-size: 13.5px; color: var(--gold-dark); border-bottom: 1px solid var(--gold-light); padding-bottom: 1px; transition: border-color 0.25s; }
+  .tl-links a:hover { border-color: var(--gold); }
+  .tl-ch { font-size: 11.5px; letter-spacing: 0.1em; color: var(--faint); }
+
+  .modern-list {
+    list-style: none;
+    padding: 0;
+    margin: 56px auto 0;
+    max-width: 880px;
+    display: grid;
+    gap: 22px;
+  }
+  .modern-list li { display: grid; grid-template-columns: 88px 96px 1fr; gap: 6px 20px; align-items: baseline; }
+  .md-who { font-family: var(--zh-head); font-size: 20px; letter-spacing: 0.06em; color: var(--forest); }
+  .md-years { font-size: 11.5px; letter-spacing: 0.08em; color: var(--faint); }
+  .md-line { font-size: 15.5px; line-height: 1.9; color: var(--muted); }
+
+  .ref-list { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 24px; }
+  .ref-list li { display: grid; gap: 6px; padding: 16px 20px; border: 1px dashed var(--gold-light); border-radius: 8px; }
+  .rf-t { font-family: var(--zh-head); font-size: 18px; letter-spacing: 0.04em; line-height: 1.6; }
+  .rf-n { font-size: 14.5px; line-height: 1.85; color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .confession li { grid-template-columns: 1fr; gap: 4px; }
+    .pat-list li { grid-template-columns: 52px 1fr; }
+    .pat-line { grid-column: 1 / -1; }
+    .timeline::before { left: 4px; }
+    .tl-item { grid-template-columns: 1fr; gap: 8px; padding-left: 26px; }
+    .tl-item::after { left: 1px; top: 6px; }
+    .tl-when { text-align: left; }
+    .modern-list li { grid-template-columns: 1fr; gap: 3px; }
+  }
+</style>

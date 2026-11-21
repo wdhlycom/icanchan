@@ -1,0 +1,87 @@
+---
+import { isPublished } from '../../../../lib/publish';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articlesZh', ({ data }) => !data.draft && isPublished(data) && data.series === 'glossary');
+const byId = new Map(articles.map((a) => [a.id, a]));
+
+/* 词条按「先基础、后进阶」排。 */
+const terms = [
+  { word: '心即是佛', id: 'glossary-01-mind-is-buddha' },
+  { word: '色即是空', id: 'glossary-02-form-is-emptiness' },
+  { word: '众生平等', id: 'glossary-03-equality' },
+  { word: '无常', id: 'glossary-04-impermanence' },
+  { word: '空', id: 'glossary-05-emptiness' },
+  { word: '缘起', id: 'glossary-06-dependent-origination' },
+  { word: '无我', id: 'glossary-07-no-self' },
+  { word: '因果', id: 'glossary-08-cause-and-effect' },
+  { word: '慈悲', id: 'glossary-09-compassion' },
+  { word: '般若', id: 'glossary-10-prajna' },
+  { word: '涅槃', id: 'glossary-11-nirvana' },
+];
+---
+
+<BaseLayout
+  locale="zh"
+  title="名词解释"
+  description="把佛学里那些被讲烂了的词，一个个拆回它本来的意思，再加上一句落到日子上的理解。"
+  path="/zh/series/glossary/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>名词解释</h1>
+      <p>这些词人人都听过一百遍，未必有一次知道它在回答什么问题。这里不抄词典，只讲两件事：它原本在说什么，以及它落到今天的日子里是什么样。</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <ol class="pin-list">
+      {terms.map((t) => {
+        const entry = t.id ? byId.get(t.id) : null;
+        return (
+          <li class:list={['pin', { 'is-todo': !entry }]}>
+            <div>
+              <span class="pin-name">{t.word}</span>
+              {entry ? (
+                <span class="pin-links">
+                  <a href={`/zh/series/glossary/${entry.id}/`}>{entry.data.title} →</a>
+                </span>
+              ) : (
+                <span class="pin-count">待写</span>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+</BaseLayout>
+
+<style>
+  .pin-list { list-style: none; padding: 0; margin: 0; }
+  .pin > div {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 18px;
+    align-items: baseline;
+    padding: 16px 12px;
+  }
+  .pin-name { font-family: var(--zh-head); font-size: 21px; letter-spacing: 0.05em; }
+  .pin-count { font-size: 11px; letter-spacing: 0.12em; color: var(--faint); white-space: nowrap; }
+  .pin.is-todo .pin-name { color: var(--faint); opacity: 0.62; }
+  .pin-links { display: flex; flex-direction: column; gap: 6px; }
+  .pin-links a {
+    font-size: 14px;
+    color: var(--gold-dark);
+    border-bottom: 1px solid var(--gold-light);
+    padding-bottom: 1px;
+    width: fit-content;
+    transition: border-color 0.25s;
+  }
+  .pin-links a:hover { border-color: var(--gold); }
+  @media (max-width: 900px) {
+    .pin > div { grid-template-columns: 1fr; gap: 6px; }
+    .pin-count, .pin-links { grid-column: 1; }
+  }
+</style>

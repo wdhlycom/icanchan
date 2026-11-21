@@ -1,0 +1,212 @@
+---
+import { isPublished } from '../../lib/publish';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+/* 与中文 /zh/buddhism/ 同构：导读、三十章主干、主干旁的短章、源流入口、按状态选路。 */
+const essays = await getCollection('essays', ({ data }) => !data.draft && isPublished(data));
+const guide = essays.find((e) => e.data.section === 'buddhism-guide');
+const extend = essays
+  .filter((e) => e.data.section === 'buddhism')
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+
+const chapters = await getCollection(
+  'articles',
+  ({ data }) => !data.draft && isPublished(data) && data.series === 'buddhism-101'
+);
+const chapterCount = chapters.length;
+/* 章节按周逐篇出现；还没到的先指到连载目录，免得点进去是空页 */
+const chapterUrl = (id) =>
+  chapters.some((c) => c.id === id) ? `/series/buddhism-101/${id}/` : '/series/buddhism-101/';
+
+const paths = [
+  { who: 'Completely new', what: 'Start at chapter 1 and keep going. Thirty chapters, about 56,000 characters; two weeks at a slow pace.', href: chapterUrl('01-abundant-everything-empty-something') },
+  { who: 'You have read the popular books', what: 'Start at chapters 3 and 4, then jump to chapter 28 for where the mindfulness research runs out.', href: chapterUrl('03-not-what-you-think') },
+  { who: 'You do not want to read, you want to practice', what: 'Chapter 22 on why knowing and doing separate, chapter 23 for the method, chapter 25 for the moment an emotion hits.', href: chapterUrl('22-the-knowing-doing-gap') },
+  { who: 'You know some Buddhism and want Chan', what: 'Skip the foundations and go to the Platform Sutra section. Huineng will say much of it again from another angle.', href: '/platform-sutra/' },
+];
+---
+
+<BaseLayout
+  title="Buddhism"
+  description="Buddhism is not just a cushion and a sitting posture. This section has a main track, a guide, and short pieces, all in plain sight."
+  path="/buddhism/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Buddhism</h1>
+      <p>Buddhism is not just a cushion and a sitting posture. The West kept the sitting and dropped the rest.</p>
+    </div>
+  </section>
+
+  {guide && (
+    <section class="section container" style="padding-top:20px;padding-bottom:48px">
+      <a class="guide-card" href={`/essays/${guide.id}/`}>
+        <span class="guide-kicker">Section guide · read this first</span>
+        <h2>{guide.data.title}</h2>
+        <p>{guide.data.description}</p>
+        <span class="card-meta">Read it, then decide which chapter to enter</span>
+      </a>
+    </section>
+  )}
+
+  <section class="section container" style="padding-top:0">
+    <div class="main-track">
+      <div class="track-head">
+        <h2>The main track</h2>
+        <p>
+          Thirty chapters, from the first truth to a map of the mind you can actually use. Numbered,
+          interlocking, read in order. Everything else in this section is either a supplement or the
+          same thing from another angle.
+        </p>
+        <ul class="track-meta">
+          <li>{chapterCount} chapters</li>
+          <li>About 56,000 characters</li>
+          <li>Four weeks</li>
+        </ul>
+        <a class="btn-track" href="/series/buddhism-101/">Open the series →</a>
+      </div>
+      <div class="track-peek">
+        {chapters.slice(0, 5).sort((a, b) => a.data.chapter - b.data.chapter).map((c) => (
+          <a class="peek-row" href={`/series/buddhism-101/${c.id}/`}>
+            <span class="peek-num">{String(c.data.chapter).padStart(2, '0')}</span>
+            <span class="peek-ttl">{c.data.title}</span>
+          </a>
+        ))}
+        <a class="peek-more" href="/series/buddhism-101/">All {chapterCount} chapters →</a>
+      </div>
+    </div>
+  </section>
+
+  <img
+    class="band-banner"
+    src="/assets/page-head-buddhism.jpg"
+    alt="A stone path winding through pines toward a mountain gate"
+    loading="lazy"
+  />
+
+  <section class="section container" style="padding-top:52px">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>Beside the main track</h2>
+      <p>These are unnumbered and need no order. They take up angles the main track leaves out.</p>
+    </div>
+    <ul class="read-index">
+      {extend.map((entry) => (
+        <li>
+          <a href={`/essays/${entry.id}/`}>
+            <span class="ttl">{entry.data.title}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section container">
+    <a class="axis-card" href="/lineage/">
+      <div>
+        <h2>From the Bodhi tree to the person reading this</h2>
+        <p>
+          Everything above says what it taught. That page says how it traveled here: the Buddha's
+          death, the first split, Bodhidharma crossing the river, the Great Persecution, the Five
+          Houses, Xuyun reconnecting the line. It broke, and it was repaired.
+        </p>
+        <span class="card-meta">10 turning points · 4 short lives · one line that ends here</span>
+      </div>
+      <span class="axis-arrow">→</span>
+    </a>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>Choose by where you are now</h2>
+    </div>
+    <ul class="entry-list">
+      {paths.map((p) => (
+        <li>
+          <a href={p.href}>
+            <span class="entry-who">{p.who}</span>
+            <span class="entry-what">{p.what}</span>
+            <span class="entry-arrow">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .guide-card {
+    display: block;
+    padding: 44px 48px;
+    background: var(--paper-warm);
+    transition: background 0.4s;
+  }
+  .guide-card:hover { background: var(--white); }
+  .guide-kicker { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-dark); }
+  .guide-card h2 {
+    font-size: clamp(28px, 3.6vw, 38px);
+    margin: 14px 0 14px;
+    line-height: 1.25;
+    transition: color 0.3s;
+  }
+  .guide-card:hover h2 { color: var(--gold-dark); }
+  .guide-card p { color: var(--muted); font-size: 16.5px; line-height: 1.85; margin-bottom: 14px; max-width: 720px; }
+  .card-meta { font-size: 13px; color: var(--muted); }
+
+  .main-track { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .track-head h2 { font-size: clamp(32px, 4vw, 44px); margin: 14px 0 18px; }
+  .track-head > p { color: var(--muted); font-size: 16.5px; line-height: 1.9; margin-bottom: 24px; }
+  .track-meta { list-style: none; padding: 0; margin: 0 0 30px; display: flex; gap: 28px; flex-wrap: wrap; }
+  .track-meta li { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-dark); }
+  .track-peek { display: grid; gap: 2px; }
+  .peek-row {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 16px;
+    align-items: baseline;
+    padding: 14px 10px;
+    transition: background 0.35s, color 0.25s;
+  }
+  .peek-row:hover { background: linear-gradient(90deg, rgba(197, 168, 128, 0.08), transparent 70%); color: var(--gold-dark); }
+  .peek-num { font-family: var(--serif); font-size: 14px; color: var(--gold-dark); }
+  .peek-ttl { font-family: var(--serif); font-size: 20px; line-height: 1.45; }
+  .peek-more { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); padding: 16px 10px 0; transition: color 0.25s; }
+  .peek-more:hover { color: var(--gold-dark); }
+
+  .entry-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+  .entry-list a {
+    display: grid;
+    grid-template-columns: 1fr 20px;
+    gap: 8px 16px;
+    padding: 24px 22px;
+    height: 100%;
+    transition: background 0.35s;
+  }
+  .entry-list a:hover { background: var(--paper-warm); }
+  .entry-who { font-family: var(--serif); font-size: 20px; color: var(--ink); }
+  .entry-what { font-size: 14.5px; line-height: 1.8; color: var(--muted); grid-column: 1; }
+  .entry-arrow { grid-column: 2; grid-row: 1; color: var(--gold); font-size: 15px; }
+
+  .axis-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+    padding: 44px 48px;
+    background: var(--paper-warm);
+    transition: background 0.4s;
+  }
+  .axis-card:hover { background: var(--white); }
+  .axis-card h2 { font-size: clamp(26px, 3.4vw, 36px); margin: 12px 0 14px; transition: color 0.3s; }
+  .axis-card:hover h2 { color: var(--gold-dark); }
+  .axis-card p { color: var(--muted); font-size: 16px; line-height: 1.9; max-width: 720px; margin-bottom: 14px; }
+  .axis-arrow { font-size: 22px; color: var(--gold); }
+
+  @media (max-width: 900px) {
+    .main-track { grid-template-columns: 1fr; gap: 32px; }
+    .axis-card { grid-template-columns: 1fr; padding: 32px 24px; }
+    .axis-arrow { display: none; }
+    .entry-list { grid-template-columns: 1fr; }
+    .guide-card { padding: 32px 24px; }
+  }
+</style>

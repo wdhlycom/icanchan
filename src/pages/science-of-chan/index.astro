@@ -1,0 +1,202 @@
+---
+import { isPublished } from '../../lib/publish';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { sectionBySlug } from '../../data/sections';
+
+const section = sectionBySlug('science-of-chan')!;
+
+const list = (
+  await getCollection(
+    'essays',
+    ({ data }) => !data.draft && isPublished(data) && data.section === 'science-of-chan'
+  )
+).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+
+/* 七组样板：禅怎么说 × 今天怎么说。落点不是谁对谁错，是「是不是一回事」。 */
+const pairs = [
+  {
+    chan: 'No-self',
+    chanText:
+      'No-self does not deny that this body, this memory, this person exists. It denies that behind all of it stands a fixed “I” that can be threatened, insulted, destroyed. Most people feel a kind of owner inside the mind: it looks, it thinks, it decides. Look for it carefully and you find a stream of thoughts, feelings, and body sensations coming and going, and no owner among them. Chan puts this bluntly: the point is not to annihilate yourself, but to see that the “I” you have been guarding is a bundle of conditions with a temporary label on it. Once that is seen through, a lot of the pain in “I was insulted” and “I was rejected” loosens.',
+    today: 'The self is a story the brain tells',
+    todayText:
+      'Psychology and neuroscience have spent decades assembling a picture: the self is not a little person sitting still inside the skull, but a story the brain keeps writing and revising. Memory is rewritten each time it is recalled. Who you are is an autobiography under constant revision, and its job is to make experience feel continuous and to give it a protagonist. Researchers who break the sense of self apart do not find a single self-center; they find distributed regions cooperating to tell the story. This does not prove no-self. It does show that the “I” which feels too solid to question behaves, at the level of the brain, more like a narrator than like a stone.',
+    point: 'Two roads arriving at the same place: the “I” is less solid than it feels.',
+  },
+  {
+    chan: 'Notice the thought as it rises',
+    chanText:
+      'Chan keeps repeating one instruction: notice the thought at the moment it rises, instead of being carried off by it. Most of the time we are not thinking; we are being thought. A thought arrives, we run a long way with it, and only then come back. The method does not ask you to suppress thoughts or empty your head. That cannot be done. It asks for one capacity: at the instant a thought appears, recognize that this is a thought. That recognition adds a layer of space. You are no longer identical to the thought. Waking up here is not one more thought about the thought; it is stepping back to look. That step is the basic move Chan practice repeats.',
+    today: 'Metacognition',
+    todayText:
+      'Psychology calls thinking about your own thinking metacognition. You can think, and you can also know that you are thinking and what you are thinking about. Researchers treat this capacity as one key to self-regulation, learning, and emotional control. A person who can stand outside a thought and observe it is less easily dragged by mood and habit. A great deal of mindfulness research is, at bottom, training this layer: attention returning to the present is the recognition that “I was drifting.” Different name, same action.',
+    point: 'Different names, same move: see the thought, do not be the thought.',
+  },
+  {
+    chan: 'This moment',
+    chanText:
+      'Chan talks about being in the present so often that it can sound like a slogan. It is describing a state of mind: not chewing over the past, not rehearsing the future, staying with what is actually happening now. We eat while thinking about work, work while thinking about rest; the mind is always somewhere else and rarely here. Being present does not mean giving up plans or refusing to remember. It means being able to bring attention back and set it on the one thing in front of you, on this breath. When the mind can stay here, anxiety loses a place to land.',
+    today: 'Rumination and rehearsal',
+    todayText:
+      'Psychology has two names for a mind that is elsewhere. Depression is often described as rumination: chewing the same failures and injuries over and over. Anxiety is often described as rehearsal: running bad outcomes in advance. The two move in opposite directions and share one feature. The mind is not here. Research links both patterns closely to emotional disorders, and bringing attention back to the present is a step many therapies have in common. Seen from the science side, “this moment” is the interruption of both.',
+    point: 'One is a practice tradition, one is clinical observation; both pull the mind back to now.',
+  },
+  {
+    chan: 'Dukkha',
+    chanText:
+      'The Buddha did not begin with emptiness. He began with suffering. The word does not mean “life is miserable.” It names a more precise observation: the mind has a native tendency to grip negative experience and enlarge it. One thing goes wrong, and we replay it, feel it again, and roll a small event into a large one. The Buddha saw this mechanism clearly, which is why he called it suffering. That is not pessimism; it is honesty. Admitting that the mind inflates what goes wrong is not surrender. It is the beginning of understanding the mind instead of being led by it.',
+    today: 'The negativity bias',
+    todayText:
+      'Cognitive science has found that the brain does not process information evenly. Bad news gets a heavier, faster, longer response than good news. This is the negativity bias. It once helped us avoid danger. Today it makes one criticism stick harder than ten compliments, and one failure come back for years. Study after study confirms the asymmetry, and it explains why people magnify what goes wrong and discount what goes right. Dukkha finds a counterpart at the level of mechanism: not a bad heart, but a brain weighted toward the bad.',
+    point: 'The Buddha says suffering, science says negativity bias; both begin by seeing the mind’s built-in tilt.',
+  },
+  {
+    chan: 'Letting go',
+    chanText:
+      'Letting go is usually misheard as not caring about anything. It means something else: not erasing thoughts, but no longer being led by them. Thoughts still come. Emotions still rise. You do not run after them and you do not crush them. Letting go is opening a hand that has been clenched around an outcome, a gain, a loss, a “it has to be this way.” The hand opens; the thing is still there; it simply no longer drags you down. This kind of letting go takes effort. Every release is a repetition.',
+    today: 'Cognitive defusion',
+    todayText:
+      'Acceptance and commitment therapy has a core concept called cognitive defusion. It holds that what hurts is often not the thought itself but being fused with it, treating “I am not good enough” as the fact “I am not good enough.” Defusion trains a person to step back and see a thought as a thought: not a fact, not an order to be obeyed. Researchers have built concrete exercises around it, such as prefixing a thought with “I notice I am having the thought that…” That distance and Chan’s letting go describe the same loosening of the hand.',
+    point: 'One says do not run with it; one says a thought is not a fact. Same hand opening.',
+  },
+  {
+    chan: 'Impermanence',
+    chanText:
+      'Impermanence is one of the most basic observations in Buddhism: nothing holds still, including this mind. People suffer less because things change than because some part of them secretly expects this time it will stay. The relationship will stay. The health will stay. The good years will stay. Nothing stays. Impermanence is not a counsel of gloom. It is a clear look at the fact, so that you stop spending your strength on keeping. Seeing that everything is moving can let you stand more steadily inside the movement.',
+    today: 'Neuroplasticity',
+    todayText:
+      'One of the major findings of modern brain science is neuroplasticity: connections in the brain are not fixed once you reach adulthood. They are rewritten by experience, all through life. Practice strengthens some pathways; neglect weakens others. This holds in adulthood too. The finding rhymes with impermanence in an uncanny way. Even the mind itself is not a fixed object but a network being rewritten. The old claim that everything changes is no longer only a contemplation; brain science can now photograph the change happening.',
+    point: '“Everything changes” is not mysticism; brain science can photograph it.',
+  },
+  {
+    chan: 'Compassion',
+    chanText:
+      'Compassion is not weakness and it is not indiscriminate niceness. Metta is the wish that beings be well. Karuna is the heart that cannot bear another’s suffering and wants to do something about it. It is not quite the same as love, which chooses its objects; compassion does not. Chan treats it as part of practice, not as performed goodness but as what arises when you see clearly that beings are connected. When you actually see that others hurt, fear, and get stuck as you do, the wall between you and them gets thinner. Compassion comes through the wall.',
+    today: 'Research on empathy and compassion',
+    todayText:
+      'Scientists have studied compassion with brain imaging and controlled trials, and the findings point one way: compassion can be trained. Long-term compassion meditators show stronger activity in regions linked to empathy and positive emotion. Even a few weeks of training shifts how people respond to another’s pain, moving them toward helping rather than avoiding. The research also suggests the change is tied to neuroplasticity: the brain is literally being rewritten. The old claim that compassion is cultivated rather than fixed now has modern evidence behind it.',
+    point: 'Compassion is not a temperament; it is a brain state that can be trained.',
+  },
+];
+---
+
+<BaseLayout
+  title="Science of Chan"
+  description="What Chan says about the mind, restated in language that can be checked. Not a verdict, a comparison."
+  path="/science-of-chan/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Science of Chan</h1>
+      <p>Chan made claims about the mind fifteen hundred years before neuroscience could test them. Some hold up. Some do not.</p>
+    </div>
+    <img class="page-head-banner" src={section.cover} alt="" />
+  </section>
+
+  <section class="section container" style="padding-top:16px;padding-bottom:44px">
+    <div class="premise">
+      <h2>Not a verdict. A comparison.</h2>
+      <p>
+        People like to say that Chan is really neuroplasticity, or that enlightenment is the
+        default mode network switching off. These lines are flattering, but they are
+        translations, not comparisons. They take something not yet verified and describe it as
+        if it had been.
+      </p>
+      <p>
+        This section does not do that. It also does not do the reverse: it does not hold up an
+        evidence hierarchy and grade Chan against it. Chan never had a category called
+        “proven” or “unproven.” Forcing one on it is measuring with a ruler the thing does not
+        live by.
+      </p>
+      <p class="premise-note">
+        It does one thing: it restates what Chan says about the mind in language people use
+        today. Where modern psychology or cognitive science says something similar, it sets the
+        two side by side and says plainly where they meet and where they do not. The point is
+        always either “these are talking about the same thing” or “these are not the same
+        thing.”
+      </p>
+    </div>
+  </section>
+
+  <section class="section container" style="padding-top:0">
+    <div class="paths-intro" style="margin-bottom:36px">
+      <h2>Side by side</h2>
+      <p>Seven pairs. On the left, what Chan says. On the right, what the lab says. Each side is spelled out, and the last line is where they meet.</p>
+    </div>
+
+    <div class="pair-list">
+      {pairs.map((p) => (
+        <div class="pair">
+          <div class="pair-side">
+            <span class="pair-who">Chan says</span>
+            <span class="pair-term">{p.chan}</span>
+            <p class="pair-text">{p.chanText}</p>
+          </div>
+          <div class="pair-side">
+            <span class="pair-who">Today says</span>
+            <span class="pair-term">{p.today}</span>
+            <p class="pair-text">{p.todayText}</p>
+          </div>
+          <p class="pair-point">{p.point}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>Pieces in this section</h2>
+    </div>
+    <ul class="read-index">
+      {list.map((entry) => (
+        <li>
+          <a href={`/essays/${entry.id}/`}>
+            <span class="ttl">{entry.data.title}</span>
+            <span class="meta">{entry.data.readingTime} min</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .premise { max-width: 780px; margin: 0 auto; }
+  .premise h2 { font-family: var(--serif); font-size: clamp(26px, 3.4vw, 36px); margin-bottom: 22px; line-height: 1.3; }
+  .premise p { font-size: 16.5px; line-height: 1.85; color: var(--body-text); margin-bottom: 20px; }
+  .premise-note {
+    padding: 16px 20px;
+    border: 1px dashed var(--gold-light);
+    border-radius: 8px;
+    color: var(--muted) !important;
+    font-size: 15.5px !important;
+  }
+
+  .pair-list { display: grid; gap: 40px; max-width: 960px; margin: 0 auto; }
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--divider);
+  }
+  .pair-side { padding: 28px 30px; display: grid; gap: 12px; align-content: start; }
+  .pair-side + .pair-side { border-left: 1px solid var(--divider); }
+  .pair-who { font-size: 11px; letter-spacing: 0.18em; color: var(--gold-dark); }
+  .pair-term { font-family: var(--serif); font-size: 23px; letter-spacing: 0.01em; line-height: 1.4; }
+  .pair-text { font-size: 15px; line-height: 1.85; color: var(--body-text); margin: 0; }
+  .pair-point {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 16px 30px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--forest);
+    border-top: 1px solid var(--divider);
+    background: var(--paper-warm);
+  }
+  @media (max-width: 760px) {
+    .pair { grid-template-columns: 1fr; }
+    .pair-side + .pair-side { border-left: none; border-top: 1px solid var(--divider); }
+  }
+</style>

@@ -1,0 +1,25 @@
+{
+  "name": "icanchan",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1 --port 4321",
+    "build": "astro build && pagefind --site dist",
+    "preview": "node scripts/serve.mjs",
+    "preview:astro": "astro preview --host 127.0.0.1 --port 4321",
+    "logo": "node scripts/prep-logo.mjs",
+    "tina": "node scripts/tina-dev.mjs"
+  },
+  "dependencies": {
+    "@astrojs/node": "^10.1.4",
+    "@tinacms/astro": "^0.8.0",
+    "astro": "^6.4.8",
+    "remark-cjk-friendly": "^2.3.4",
+    "tinacms": "^3.15.2"
+  },
+  "devDependencies": {
+    "@tinacms/cli": "^4.0.5",
+    "pagefind": "^1.6.0"
+  }
+}

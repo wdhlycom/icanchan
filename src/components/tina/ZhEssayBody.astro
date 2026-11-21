@@ -1,0 +1,18 @@
+---
+/* 编辑环境里正文的重绘版本：和正式页面用同一套 class，
+   只是改成 Tina 的富文本渲染，并在整块上打了「点哪一段都能改」的标记。 */
+import TinaMarkdown from '@tinacms/astro/TinaMarkdown.astro';
+import { tinaField } from '@tinacms/astro/tina-field';
+
+interface Props {
+  data?: {
+    body?: unknown;
+  } | null;
+}
+
+const { data } = Astro.props;
+---
+
+<div data-tina-field={tinaField(data as any, 'body')}>
+  {data?.body ? <TinaMarkdown content={data.body as any} /> : <p>（这篇还没有正文）</p>}
+</div>

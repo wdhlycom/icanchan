@@ -1,0 +1,77 @@
+---
+import { isPublished } from '../../lib/publish';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const list = (
+  await getCollection(
+    'essays',
+    ({ data }) => !data.draft && isPublished(data) && data.section === 'koans'
+  )
+).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+---
+
+<BaseLayout
+  title="Koans"
+  description="A koan is not a riddle and has no answer. It is a designed dead end for the thinking mind."
+  path="/koans/"
+  noAlternates
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Koans</h1>
+      <p>Not riddles. No answer at the back of the book. A dead end built on purpose.</p>
+    </div>
+    <img class="page-head-banner" src="/assets/page-head-koans.jpg" alt="A lone peak above the mist, one figure sitting and one standing below it" />
+  </section>
+
+  <section class="section container" style="padding-top:8px">
+    <div class="reading">
+      <h2 class="sec-h">What a koan is</h2>
+      <p class="body-copy">
+        A koan is a record of a conversation between a teacher and a student, kept and later used
+        as a tool for practice. The Chinese characters mean “public case” — a case file everybody
+        has to face, with no way around it.
+      </p>
+      <p class="body-copy">
+        What a koan does is push reasoning until it runs out, so that you can see the place
+        reasoning cannot reach. The teacher asks, “What is the sound of one hand?” He does not want
+        an answer. He wants you to hit the wall of that sentence. The conceptual mind is a machine
+        that manufactures explanations; feed it anything and it will produce a plausible line. A
+        koan is built so that it cannot — and when it finally stalls, another door opens a crack.
+      </p>
+      <p class="body-copy">
+        So this section is not a complete anthology. Each piece does one thing: it starts from a
+        case and lands on something you can do today. Not solving it is fine. Carrying it into your
+        day is the point.
+      </p>
+      <p class="body-copy">
+        Every piece follows the same route: first the original case, then what it is actually
+        forcing you to see, and finally a question to sit with. If the case is opaque, read the
+        unpacking. If the unpacking does not land, take the last question and stay with it.
+      </p>
+    </div>
+  </section>
+
+  {list.length > 0 && (
+    <section class="section container">
+      <div class="paths-intro" style="margin-bottom:40px">
+        <h2>The koans here</h2>
+      </div>
+      <ul class="read-index">
+        {list.map((entry) => (
+          <li>
+            <a href={`/koans/${entry.id}/`}>
+              <span class="ttl">{entry.data.title}</span>
+              <span class="meta">{entry.data.readingTime} min</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .sec-h { font-size: clamp(28px, 3.8vw, 38px); margin: 14px 0 26px; line-height: 1.28; }
+</style>

@@ -1,0 +1,282 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+/* 十二问的标题直接取文章标题，连还没到期发布的文章也要能取到标题，只是暂时不给链接 */
+const allChapters = await getCollection(
+  'articlesZh',
+  ({ data }) => !data.draft && data.series === 'platform-sutra'
+);
+const chapters = allChapters
+  .filter((c) => isPublished(c.data))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
+/* 宗宝本十品。 */
+const pins = [
+  { no: '一', name: '行由品', ids: ['sutra-01-the-woodcutter', 'sutra-01-wind-flag', 'sutra-02-originally-no-thing'], core: false },
+  { no: '二', name: '般若品', ids: ['sutra-03-what-is-prajna', 'sutra-04-maha-prajna-paramita'], core: false },
+  { no: '三', name: '疑问品', ids: ['sutra-05-merit-not-blessing'], core: false },
+  { no: '四', name: '定慧品', ids: ['sutra-06-dinghui-one', 'sutra-07-straight-mind'], core: true },
+  { no: '五', name: '坐禅品', ids: ['sutra-08-zazen-not-sitting'], core: true },
+  { no: '六', name: '忏悔品', ids: ['sutra-09-repentance'], core: false },
+  { no: '七', name: '机缘品', ids: ['sutra-10-fada-lotus', 'sutra-14-huairang', 'sutra-15-xuanjue', 'sutra-16-shenhui'], core: false },
+  { no: '八', name: '顿渐品', ids: ['sutra-11-sudden-gradual'], core: true },
+  { no: '九', name: '护法品', ids: ['sutra-12-refusing-emperor'], core: false },
+  { no: '十', name: '付嘱品', ids: ['sutra-13-last-words'], core: false },
+];
+
+/* 按日子读：不按品目排，按人一天里会卡住的地方排。
+   title 是文章标题（名言），页面优先按 id 取实时标题，这里只作兜底。 */
+const days = [
+  {
+    title: '应无所住',
+    copy: '客店外，一个卖柴的年轻人听见有人念经，念到一句，手里的柴差点没放下。他没读过书，问不出这是哪一部，只记住了那一句，然后一路北上。后来弟子把他讲的话记下来，后人把它称作「经」。人习惯先问出处：谁写的、读过什么、师承哪一位。这本书偏偏把这几样全空着。',
+    id: 'sutra-01-the-woodcutter',
+  },
+  {
+    title: '本来无一物',
+    copy: '寺里选继承人，让众人各写一首。首座写「时时勤拂拭」，人人看了都服。一个在碓房舂米的人，请人代笔写了另一首：「本来无一物，何处惹尘埃。」两句都好，好在不同的地方。前一句把人放在「还不够干净」那一边，后一句把这句前提整个拿走了。人心里那句「我不够好」，往往不是谁当面说的，是自己日日擦镜子擦出来的。',
+    id: 'sutra-02-originally-no-thing',
+  },
+  {
+    title: '心迷法华转',
+    copy: '法达诵《法华经》三千遍，见慧能时，头不肯低到地。慧能没问他懂了多少，只说：心迷，是经在转人；心悟，才是人在转经。一本书读得极熟，熟到能背，有时会反倒被书拿住——遇事先想「经上怎么说」，自己那点判断反而不敢用了。念得多和转得动，是两件事。',
+    id: 'sutra-10-fada-lotus',
+  },
+  {
+    title: '一物不中',
+    copy: '怀让来见慧能，慧能问：是什么东西，怎么来的？怀让答不上，回去参了八年，再来时说：说它像任何一样东西，都不中。人介绍自己、介绍一份工作、介绍一段关系，开口总得先找个像的东西。那八年不是用来想出答案的，是把这些「像」一个一个放下。',
+    id: 'sutra-14-huairang',
+  },
+  {
+    title: '风动幡动',
+    copy: '两个和尚看旗子飘，一个说风在动，一个说幡在动，争到脸红。慧能路过，没判谁对，只说：不是风动，不是幡动，是仁者心动。日常里也常这么吵——到底谁先开始、谁该改、算在谁头上。吵的其实不是原因，是得有个归属。慧能既没说风没动，也没说幡没动。',
+    id: 'sutra-01-wind-flag',
+  },
+  {
+    title: '定慧一体',
+    copy: '半夜醒来，脑子里冒出一句白天没说出口的话。本来只是一句，接着替它想了对方会怎么回、自己该怎么接、明天要不要补一句——一圈下来，人彻底醒了。第一下不请自来，后面每一圈都是自己续上的。慧能讲无念，不是要人没有念头，是别替它续费。',
+    id: 'sutra-06-dinghui-one',
+  },
+  {
+    title: '无相忏悔',
+    copy: '同一个人，没贴标签之前，会看他说什么、做什么。一旦心里给他贴上「这人难缠」，后面他讲的每句话都像在印证，连沉默都成了证据。标签贴上去，看就停了。慧能讲无相、讲忏悔，落点都在这一处：前念起的错别再跟着起，后念别再照着旧印象走。',
+    id: 'sutra-09-repentance',
+  },
+  {
+    title: '直心',
+    copy: '一场争执早结束了，人还在心里重播，替自己补一句更得体的回话。事只发生一次，心里过了七八遍。慧能说直心是道场，行住坐卧都抱着一颗不拐弯的心。不拐弯不是想得开，是不在已经过去的事上，再添一层。',
+    id: 'sutra-07-straight-mind',
+  },
+  {
+    title: '坐禅',
+    copy: '很多人以为禅在垫子上：盘腿、计时、数呼吸，下了垫子就还给日子。慧能重新说了一遍「坐禅」——坐不是姿势，是不被境界卷走；禅不是入定，是看见本性不动。于是问题换了：不在垫子上的那十几个小时，心被什么牵着走。',
+    id: 'sutra-08-zazen-not-sitting',
+  },
+  {
+    title: '功德',
+    copy: '梁武帝建寺、度僧、布施，问达摩：我有什么功德。达摩答：实无功德。人做完一件自觉很重的事，常忍不住等一句回话——被看见、被记着、被算数。慧能后来把这件事说得更直：求的是福，不是功德。福可以数，功德数不出来。',
+    id: 'sutra-05-merit-not-blessing',
+  },
+  {
+    title: '顿渐',
+    copy: '同一件事，有人慢慢磨，有人一夜之间通了。于是有了南顿北渐，两边争了几十年。慧能说：法没有顿和渐，是人有利钝。争的不是快慢，是「这样修对不对」。越把修行做成攒积分，越累；累的不是路，是那股一直要确认进度的劲。',
+    id: 'sutra-11-sudden-gradual',
+  },
+  {
+    title: '识自本心',
+    copy: '慧能圆寂前，弟子哭。他说别哭，法性本无生灭来去。留给人的不是一句口诀，是「识自本心，见自本性」八个字。人读一本书，总想带走点什么：一个方法、一句能背的话。临别这几句，把要带走的手也松开了——迷时师度，悟时自度。',
+    id: 'sutra-13-last-words',
+  },
+];
+
+const byId = new Map(chapters.map((c) => [c.id, c]));
+const titleById = new Map(allChapters.map((c) => [c.id, c.data.title]));
+const written = pins.filter((p) => p.ids.some((id) => byId.has(id))).length;
+---
+
+<BaseLayout
+  locale="zh"
+  title="坛经"
+  description="唯一被尊为「经」的中国文本，出自一个几乎不识字的樵夫。按经读十品，或按日子读十二问。"
+  path="/zh/platform-sutra/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>坛经</h1>
+      <p>佛经的开头都是「如是我闻」，只有这一部是「惠能说」。</p>
+    </div>
+    <img class="page-head-banner" src="/assets/page-head-sutra.jpg" alt="重檐殿堂前站着一株老松，墙上悬着一面圆镜" />
+  </section>
+
+  <section class="section container" style="padding-top:16px;padding-bottom:36px">
+    <div class="text-facts">
+      <div class="fact">
+        <span class="fact-k">说的</span>
+        <span class="fact-v">慧能（638–713），岭南新州人，俗姓卢，少年卖柴养母</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">记的</span>
+        <span class="fact-v">法海等弟子记录，后人屡次增补——所以版本之间差别很大</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">版本</span>
+        <span class="fact-v">
+          敦煌本（约 780 年，1.2 万字，不分品）、惠昕本（967）、契嵩本（1056）、宗宝本（1291，2 万字，十品）
+        </span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">读哪本</span>
+        <span class="fact-v">通行的是宗宝本。这一栏按宗宝本十品的次序讲，遇上版本差异会说明</span>
+      </div>
+    </div>
+    <p class="fact-note">
+      版本这件事不是考据癖。敦煌本里没有「本来无一物」那首偈，也没有「风幡之动」——今天最流行的几个故事，都出现在晚出的本子里。读的时候知道这一点，比背下来更有用。
+    </p>
+  </section>
+
+  <section class="section container" style="padding-top:0;padding-bottom:56px">
+    <div class="paths-intro" style="margin-bottom:28px">
+      <h2>按日子读 · 十二问</h2>
+    </div>
+    <p class="fact-note" style="margin-top:0;margin-bottom:40px">
+      一部经有两种读法。按经读，从行由品第一顺着走到底；按日子读，从今天卡住的那件事进去。下面十二条按日子里的坎排，标题就是对应那一篇，点标题直接读。
+    </p>
+
+    <ol class="day-list">
+      {days.map((d, i) => {
+        const title = titleById.get(d.id) ?? d.title;
+        const linked = byId.has(d.id);
+        return (
+          <li class="day">
+            <span class="day-no">{String(i + 1).padStart(2, '0')}</span>
+            <div class="day-body">
+              <h3>
+                {linked ? <a href={`/zh/platform-sutra/${d.id}/`}>{title}</a> : title}
+              </h3>
+              <p>{d.copy}</p>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  <section class="section container" style="padding-top:0">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>按经读 · 十品（已写 {written} 品）</h2>
+    </div>
+
+    <ol class="pin-list">
+      {pins.map((p) => {
+        const entries = p.ids.map((id) => byId.get(id)).filter(Boolean);
+        return (
+          <li class:list={['pin', { 'is-todo': entries.length === 0 }]}>
+            <div>
+              <span class="pin-no">{p.no}</span>
+              <span class="pin-name">{p.name}{p.core && <span class="pin-core">核心</span>}</span>
+              {entries.length > 0 ? (
+                <span class="pin-links">
+                  {entries.map((c) => (
+                    <a href={`/zh/platform-sutra/${c.id}/`}>{c.data.title} →</a>
+                  ))}
+                </span>
+              ) : (
+                <span class="pin-count">待写</span>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+    <img class="mid-banner" src="/assets/page-head-series.jpg" alt="连绵山水长卷，村舍与栈道散在山间" loading="lazy" />
+  </section>
+</BaseLayout>
+
+<style>
+  .text-facts { display: grid; gap: 16px; max-width: 880px; }
+  .fact { display: grid; grid-template-columns: 76px 1fr; gap: 20px; align-items: baseline; }
+  .fact-k { font-size: 11px; letter-spacing: 0.18em; color: var(--gold-dark); }
+  .fact-v { font-size: 15.5px; line-height: 1.85; color: var(--body-text); }
+  .fact-note {
+    max-width: 880px;
+    margin-top: 28px;
+    padding: 16px 20px;
+    border: 1px dashed var(--gold-light);
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.95;
+    color: var(--muted);
+  }
+
+  .day-list { list-style: none; padding: 0; margin: 0; max-width: 880px; }
+  .day {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 22px;
+    padding: 22px 12px 24px;
+  }
+  .day-no {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--gold-dark);
+    letter-spacing: 0.04em;
+    padding-top: 4px;
+  }
+  .day-body h3 {
+    font-family: var(--zh-head);
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    margin: 0 0 10px;
+  }
+  .day-body h3 a { color: var(--ink); transition: color 0.25s; }
+  .day-body h3 a:hover { color: var(--gold-dark); }
+  .day-body p {
+    font-size: 15.5px;
+    line-height: 1.95;
+    color: var(--body-text);
+    margin: 0 0 12px;
+  }
+
+  .pin-list { list-style: none; padding: 0; margin: 0; }
+  .pin { position: relative; }
+  .pin > div {
+    display: grid;
+    grid-template-columns: 34px 110px 1fr;
+    gap: 18px;
+    align-items: baseline;
+    padding: 16px 12px;
+  }
+  .pin-no { font-family: var(--serif); font-size: 17px; color: var(--gold-dark); }
+  .pin-name { font-family: var(--zh-head); font-size: 21px; letter-spacing: 0.05em; }
+  .pin-core {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 1px 9px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--gold-dark);
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    vertical-align: 2px;
+  }
+  .pin-count { font-size: 11px; letter-spacing: 0.12em; color: var(--faint); white-space: nowrap; }
+  .pin.is-todo .pin-name, .pin.is-todo .pin-no { color: var(--faint); opacity: 0.62; }
+  .pin-links { display: flex; flex-direction: column; gap: 6px; }
+  .pin-links a {
+    font-size: 14px;
+    color: var(--gold-dark);
+    width: fit-content;
+    transition: color 0.25s;
+  }
+  .pin-links a:hover { color: var(--gold); }
+  @media (max-width: 900px) {
+    .day { grid-template-columns: 32px 1fr; gap: 14px; }
+    .pin > div { grid-template-columns: 28px 1fr; gap: 6px 14px; }
+    .pin-links, .pin-count { grid-column: 2; }
+    .fact { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>

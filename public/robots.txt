@@ -1,0 +1,32 @@
+# icanchan.com — Chan / 参禅
+# 公开原创内容站。全部页面允许抓取，站点地图见下。
+
+Sitemap: https://icanchan.com/sitemap.xml
+
+User-agent: *
+Allow: /
+# /admin/ 是内容后台的开发空壳页，线上没有内容，不允许抓取。
+Disallow: /admin/
+
+# --- 搜索与引用型 AI 爬虫（会在回答里给出来源链接）---
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+
+# --- 训练与抓取型 AI 爬虫 ---
+# 本站为公开原创内容，目前同样允许。若日后不想被用于模型训练，
+# 把下面四行的 Allow 改成 Disallow 即可；这不影响搜索引擎收录，
+# 也不影响上面那组「搜索引用型」爬虫。
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: CCBot
+Allow: /

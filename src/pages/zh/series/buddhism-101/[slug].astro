@@ -1,0 +1,87 @@
+---
+import { isPublished } from '../../../../lib/publish';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import TinaIsland from '../../../../components/tina/TinaIslandLocal.astro';
+import Breadcrumb from '../../../../components/Breadcrumb.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const articles = (
+    await getCollection('articlesZh', ({ data }) => !data.draft && isPublished(data) && data.series === 'buddhism-101')
+  ).sort((a, b) => a.data.chapter - b.data.chapter);
+  return articles.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: articles[index - 1], next: articles[index + 1] },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'articlesZh'>;
+  prev?: CollectionEntry<'articlesZh'>;
+  next?: CollectionEntry<'articlesZh'>;
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+/* 只有 `npm run tina` 才把正文包成可编辑区块；正常构建仍旧是原来那个 div。 */
+const tinaMode = process.env.TINA_DEV === '1';
+/* 完整四层：首页 → 专题 → 入门之路 → 文章标题。UI 面包屑只取前三层，JSON-LD 用完整四层。 */
+const breadcrumb = [
+  { label: '首页', href: '/zh/' },
+  { label: '专题', href: '/zh/series/' },
+  { label: '入门之路', href: '/zh/series/buddhism-101/' },
+  { label: entry.data.title },
+];
+---
+
+<BaseLayout
+  locale="zh"
+  title={entry.data.title}
+  description={entry.data.description}
+  path={`/zh/series/buddhism-101/${entry.id}/`}
+  breadcrumb={breadcrumb}
+>
+  <article>
+    <Breadcrumb items={breadcrumb.slice(0, -1)} />
+
+
+    <header class="article-head reading">
+      <h1>{entry.data.title}</h1>
+    </header>
+
+    {tinaMode ? (
+      <TinaIsland
+        name="zhArticle"
+        wrapper={{ tag: 'div', className: 'prose reading' }}
+        params={{ slug: entry.id }}
+        primary
+      >
+        <Content />
+      </TinaIsland>
+    ) : (
+      <div class="prose reading">
+        <Content />
+      </div>
+    )}
+
+    <nav class="article-nav reading">
+      <div>
+        {prev && (
+          <a href={`/zh/series/buddhism-101/${prev.id}/`}>
+            <span>上一篇</span>
+            {prev.data.title}
+          </a>
+        )}
+      </div>
+      <div style="text-align:right">
+        {next && (
+          <a href={`/zh/series/buddhism-101/${next.id}/`}>
+            <span>下一篇</span>
+            {next.data.title}
+          </a>
+        )}
+      </div>
+    </nav>
+  </article>
+</BaseLayout>

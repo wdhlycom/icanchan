@@ -1,0 +1,194 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const life = await getCollection('essaysZh', ({ data }) => !data.draft && isPublished(data) && data.section === 'zen-life');
+const lead = life.find((e) => e.data.category === '总纲');
+
+/* 八苦：这一栏唯一的分类。每篇自己写明属于哪一苦，页面只负责读出来。 */
+const sorrows = [
+  { key: '生苦', note: '活着这件事，本身就有点累' },
+  { key: '老苦', note: '怕的不是皱纹' },
+  { key: '病苦', note: '痛之外，又多添一层' },
+  { key: '死苦', note: '抓不住，也不肯放' },
+  { key: '爱别离', note: '留不住，靠不近' },
+  { key: '怨憎会', note: '躲不开，放不下' },
+  { key: '求不得', note: '想要，要不到' },
+  { key: '五蕴炽盛', note: '念头自己转个不停' },
+];
+const groups = sorrows.map((s) => ({
+  ...s,
+  items: life.filter((e) => e.data.category === s.key),
+}));
+
+/* 不落在哪一苦上的几篇：讲禅本身。不分组、不编号、不排先后。 */
+const keys = new Set(['总纲', ...sorrows.map((s) => s.key)]);
+const rest = life.filter((e) => !keys.has(e.data.category));
+---
+
+<BaseLayout
+  locale="zh"
+  title="禅生活"
+  description="生活不是修行的场景，生活本身就是道场。这一栏按八苦来读日子里卡住的地方。"
+  path="/zh/essays/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>禅生活</h1>
+      <p>生活不是修行的场景，生活本身就是道场。</p>
+    </div>
+  </section>
+
+  {lead && (
+    <section class="section container" style="padding-top:24px">
+      <a class="feature-card" href={`/zh/essays/${lead.id}/`}>
+        <div class="feature-thumb">
+          <img src={lead.data.cover} alt="" />
+        </div>
+        <div class="feature-body">
+          <span class="tag">定调 · 先读这一篇</span>
+          <h2>{lead.data.title}</h2>
+          <p class="feature-note">
+            祖师禅不把修行当成一件专门的事。它拆掉的不是戒律，是「修行与生活是两件事」这个前提。这一篇把来路讲清楚：慧能换了什么地基，百丈为什么去种地，南泉那句「拟向即乖」为什么让人没法安心喝茶。
+          </p>
+          <span class="card-meta">读完之后，这一栏的其余文章才接得上</span>
+        </div>
+      </a>
+    </section>
+  )}
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>八苦</h2>
+      <p>这一栏按佛陀说的八苦来排：生、老、病、死、爱别离、怨憎会、求不得、五蕴炽盛。苦不是什么大事，就是日子里那些卡住的地方。</p>
+    </div>
+    <div class="field-grid">
+      {groups.map((g) => (
+        <div class="field-card">
+          <h3>{g.key}</h3>
+          <span class="field-note">{g.note}</span>
+          <ul class="field-list">
+            {g.items.map((entry) => (
+              <li><a href={`/zh/essays/${entry.id}/`}>{entry.data.title}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {rest.length > 0 && (
+    <>
+      <img
+        class="band-banner"
+        src="/assets/page-head-essays.jpg"
+        alt="木桌上的一只陶罐，旁边一盏小油灯"
+        loading="lazy"
+      />
+      <section class="section container" style="padding-top:52px">
+        <div class="paths-intro" style="margin-bottom:32px">
+          <h2>还有几篇</h2>
+          <p>这几篇讲禅本身，不落在哪一苦上。不看先后，随手翻。</p>
+        </div>
+        <ul class="rest-list">
+          {rest.map((entry) => (
+            <li><a href={`/zh/essays/${entry.id}/`}>{entry.data.title}</a></li>
+          ))}
+        </ul>
+      </section>
+    </>
+  )}
+</BaseLayout>
+
+<style>
+  .feature-card {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .feature-thumb img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .feature-body h2 {
+    font-size: clamp(32px, 4.4vw, 46px);
+    margin: 16px 0 16px;
+    line-height: 1.2;
+    transition: color 0.3s;
+  }
+  .feature-card:hover .feature-body h2 { color: var(--gold-dark); }
+  .feature-body > p { color: var(--muted); font-size: 17px; line-height: 1.85; margin-bottom: 18px; }
+  .feature-note {
+    font-family: var(--zh);
+    font-size: 16px !important;
+    line-height: 2 !important;
+    color: var(--body-text) !important;
+    padding: 16px 20px;
+    border: 1px dashed var(--gold-light);
+    border-radius: 8px;
+  }
+  .field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px 48px;
+  }
+  .field-card h3 {
+    font-family: var(--zh-head);
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    margin: 0 0 4px;
+  }
+  .field-note {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--gold-dark);
+  }
+  .field-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+    display: grid;
+    gap: 10px;
+  }
+  .field-list li {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    padding-left: 18px;
+    position: relative;
+  }
+  .field-list li::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+    top: -2px;
+    color: var(--gold);
+    font-size: 20px;
+  }
+  .field-list a {
+    color: var(--body-text);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .field-list a:hover { color: var(--gold-dark); }
+  .rest-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 40px;
+  }
+  .rest-list a {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--body-text);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .rest-list a:hover { color: var(--gold-dark); }
+  @media (max-width: 900px) {
+    .feature-card { grid-template-columns: 1fr; gap: 28px; }
+    .field-grid { grid-template-columns: 1fr; gap: 28px; }
+    .rest-list { grid-template-columns: 1fr; }
+  }
+</style>

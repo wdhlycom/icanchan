@@ -1,0 +1,75 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const articles = (
+    await getCollection('articles', ({ data }) => !data.draft && isPublished(data) && data.series === 'buddhism-101')
+  ).sort((a, b) => a.data.chapter - b.data.chapter);
+  return articles.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: articles[index - 1], next: articles[index + 1] },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'articles'>;
+  prev?: CollectionEntry<'articles'>;
+  next?: CollectionEntry<'articles'>;
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  path={`/series/buddhism-101/${entry.id}/`}
+>
+  <article>
+    <Breadcrumb
+      items={[
+        { label: 'Home', href: '/' },
+        { label: 'Series', href: '/series/' },
+        { label: 'Buddhism 101', href: '/series/buddhism-101/' },
+      ]}
+    />
+
+    <header class="article-head reading">
+      <span class="tag">
+        Chapter {entry.data.chapter} · {entry.data.category}
+      </span>
+      <h1>{entry.data.title}</h1>
+      <p class="card-meta" style="margin-top:22px">
+        {entry.data.readingTime} min read
+      </p>
+    </header>
+
+    <div class="prose reading">
+      <Content />
+    </div>
+
+    <nav class="article-nav reading">
+      <div>
+        {prev && (
+          <a href={`/series/buddhism-101/${prev.id}/`}>
+            <span>Previous</span>
+            {prev.data.title}
+          </a>
+        )}
+      </div>
+      <div style="text-align:right">
+        {next && (
+          <a href={`/series/buddhism-101/${next.id}/`}>
+            <span>Next</span>
+            {next.data.title}
+          </a>
+        )}
+      </div>
+    </nav>
+  </article>
+</BaseLayout>

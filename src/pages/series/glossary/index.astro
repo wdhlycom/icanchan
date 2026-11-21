@@ -1,0 +1,86 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articles', ({ data }) => !data.draft && isPublished(data) && data.series === 'glossary');
+const byId = new Map(articles.map((a) => [a.id, a]));
+
+/* Term order. */
+const terms = [
+  { term: 'Mind Is Buddha', id: 'glossary-01-mind-is-buddha' },
+  { term: 'Form Is Emptiness', id: 'glossary-02-form-is-emptiness' },
+  { term: 'All Beings Are Equal', id: 'glossary-03-equality' },
+  { term: 'Impermanence', id: 'glossary-04-impermanence' },
+  { term: 'Emptiness', id: 'glossary-05-emptiness' },
+  { term: 'Dependent Origination', id: 'glossary-06-dependent-origination' },
+  { term: 'No-Self', id: 'glossary-07-no-self' },
+  { term: 'Cause and Effect', id: 'glossary-08-cause-and-effect' },
+  { term: 'Compassion', id: 'glossary-09-compassion' },
+  { term: 'Prajna', id: 'glossary-10-prajna' },
+  { term: 'Nirvana', id: 'glossary-11-nirvana' },
+];
+---
+
+<BaseLayout
+  title="Glossary"
+  description="Eleven words Chan keeps using, each taken back to the question it was answering."
+  path="/series/glossary/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Glossary</h1>
+      <p>Not definitions. Each word, taken back to the question it was answering.</p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <ol class="pin-list">
+      {terms.map((t) => {
+        const entry = byId.get(t.id);
+        return (
+          <li class:list={['pin', { 'is-todo': !entry }]}>
+            <div>
+              <span class="pin-name">{t.term}</span>
+              {entry ? (
+                <span class="pin-links">
+                  <a href={`/series/glossary/${entry.id}/`}>{entry.data.title} →</a>
+                </span>
+              ) : (
+                <span class="pin-count">Being written</span>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+</BaseLayout>
+
+<style>
+  .pin-list { list-style: none; padding: 0; margin: 0; }
+  .pin > div {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    gap: 18px;
+    align-items: baseline;
+    padding: 16px 12px;
+  }
+  .pin-name { font-family: var(--serif); font-size: 22px; letter-spacing: 0.01em; }
+  .pin-count { font-size: 11px; letter-spacing: 0.12em; color: var(--faint); white-space: nowrap; }
+  .pin.is-todo .pin-name { color: var(--faint); opacity: 0.62; }
+  .pin-links { display: flex; flex-direction: column; gap: 6px; }
+  .pin-links a {
+    font-size: 14px;
+    color: var(--gold-dark);
+    border-bottom: 1px solid var(--gold-light);
+    padding-bottom: 1px;
+    width: fit-content;
+    transition: border-color 0.25s;
+  }
+  .pin-links a:hover { border-color: var(--gold); }
+  @media (max-width: 900px) {
+    .pin > div { grid-template-columns: 1fr; gap: 6px; }
+    .pin-count, .pin-links { grid-column: 1; }
+  }
+</style>

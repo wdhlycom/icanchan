@@ -1,0 +1,79 @@
+---
+import { isPublished } from '../../../../lib/publish';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { categoryZh } from '../../../../i18n/ui';
+
+const articles = (
+  await getCollection('articlesZh', ({ data }) => !data.draft && isPublished(data) && data.series === 'buddhism-101')
+).sort((a, b) => a.data.chapter - b.data.chapter);
+
+/* 三十章走一条弧线，分七段。每段一行导读，让读者看懂这条路怎么走。 */
+const stages = [
+  { name: '起疑', range: '第 1–2 章', lead: '从哪里起笔：日子看着还行，却总像缺了一块。', from: 1, to: 2 },
+  { name: '正见', range: '第 3–7 章', lead: '佛学到底在说什么：四圣谛、苦从哪来、八正道。', from: 3, to: 7 },
+  { name: '来路', range: '第 8–13 章', lead: '它怎么一路变成禅：从佛陀，到达摩面壁。', from: 8, to: 13 },
+  { name: '坛经', range: '第 14–18 章', lead: '禅的文本核心：顿渐、无念、公案。', from: 14, to: 18 },
+  { name: '落地', range: '第 19–21 章', lead: '禅怎么走进中国的生活和思想。', from: 19, to: 21 },
+  { name: '修行', range: '第 22–26 章', lead: '能上手的方法：呼吸、吃饭走路、情绪、关系。', from: 22, to: 26 },
+  { name: '验证', range: '第 27–30 章', lead: '无常、科学与一张地图。', from: 27, to: 30 },
+];
+---
+
+<BaseLayout
+  locale="zh"
+  title="入门之路"
+  description="三十章，从第一个真相走到一张用得上的心智地图。"
+  path="/zh/series/buddhism-101/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>入门之路</h1>
+      <p>三十章，走一条弧线：从「日子还行，却缺一块」起笔，先看清佛学到底在说什么——四圣谛、苦从哪来、八正道（1–7）；再追它怎么从印度一路变成禅，直到达摩面壁（8–13）；落在禅的文本核心《坛经》上（14–18）；然后是它走进中国的生活和思想（19–21）；接着是能上手的方法（22–26）；最后用无常、科学与一张地图收束（27–30）。</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    {stages.map((st) => (
+      <div class="stage">
+        <div class="stage-head">
+          <h2>{st.name}</h2>
+          <span class="stage-range">{st.range}</span>
+        </div>
+        <p class="stage-lead">{st.lead}</p>
+        <div class="chapter-list">
+          {articles
+            .filter((e) => e.data.chapter >= st.from && e.data.chapter <= st.to)
+            .map((entry) => (
+              <a class="chapter-row" href={`/zh/series/buddhism-101/${entry.id}/`}>
+                <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+                <span class="ttl">{entry.data.title}</span>
+                <span class="meta">
+                  {categoryZh[entry.data.category] ?? entry.data.category}
+                </span>
+              </a>
+            ))}
+        </div>
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .stage { margin-bottom: 52px; }
+  .stage:last-child { margin-bottom: 0; }
+  .stage-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+  .stage-head h2 {
+    font-family: var(--zh-head);
+    font-size: 26px;
+    letter-spacing: 0.03em;
+    margin: 0;
+  }
+  .stage-range { font-size: 11px; letter-spacing: 0.14em; color: var(--gold-dark); white-space: nowrap; }
+  .stage-lead { font-size: 15px; line-height: 1.8; color: var(--muted); margin: 0 0 10px; max-width: 720px; }
+  @media (max-width: 900px) {
+    .stage { margin-bottom: 40px; }
+    .stage-head { flex-wrap: wrap; gap: 6px 14px; }
+    .stage-head h2 { font-size: 23px; }
+  }
+</style>

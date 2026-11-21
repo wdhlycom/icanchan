@@ -1,0 +1,66 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const essays = await getCollection('essaysZh', ({ data }) => !data.draft && isPublished(data));
+const list = essays
+  .filter((e) => e.data.section === 'koans')
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+---
+
+<BaseLayout
+  locale="zh"
+  title="公案"
+  description="公案不是谜语，没有谜底。它是一条设计好的认知死路。"
+  path="/zh/koans/"
+  noAlternates
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>公案</h1>
+      <p>不是谜语，没有谜底。公案是一条设计好的认知死路。</p>
+    </div>
+    <img class="page-head-banner" src="/assets/page-head-koans.jpg" alt="孤峰立在雾上，峰下一坐一立两个人" />
+  </section>
+
+  <section class="section container" style="padding-top:8px">
+    <div class="reading">
+      <h2 class="sec-h">什么是公案</h2>
+      <p class="body-copy">
+        公案是师徒对答的记录，后来被当成修行的工具。「公」是公家，「案」是案卷——一份大家都要面对的老案子，谁也别想绕过去。
+      </p>
+      <p class="body-copy">
+        公案的本质，是把理性逼到力竭，好让人看见它够不着的地方。师父问「只手拍掌，声从何来」，不是要一个答案，是要人在这句话上撞墙。概念的心是台造答案的机器，喂给它什么，它都能编出一个说法。公案要做的，是让它编不出来——撞到力竭，另一扇门才开一条缝。
+      </p>
+      <p class="body-copy">
+        所以这一栏不收「公案大全」。每篇只做一件事：从一则公案起，落到一件今天就能做的事。解不开没关系，带进日子才是目的。
+      </p>
+      <p class="body-copy">
+        每篇都是同一套走法：先摆原文，再拆它到底在逼人看见什么，最后留一个参究的问题。原文看不懂没关系，看拆解；拆解想不通没关系，就着最后那个问题，慢慢参。
+      </p>
+    </div>
+  </section>
+
+  {list.length > 0 && (
+    <section class="section container">
+      <div class="paths-intro" style="margin-bottom:40px">
+        <h2>这一栏的公案</h2>
+      </div>
+      <ul class="read-index">
+        {list.map((entry) => (
+          <li>
+            <a href={`/zh/koans/${entry.id}/`}>
+              <span class="ttl">{entry.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+</BaseLayout>
+
+<style>
+  .sec-h { font-size: clamp(28px, 3.8vw, 38px); margin: 14px 0 26px; line-height: 1.28; }
+</style>

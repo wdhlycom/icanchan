@@ -1,0 +1,78 @@
+---
+import { isPublished } from '../../lib/publish';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articles', ({ data }) => !data.draft && isPublished(data));
+const masters = articles.filter((a) => a.data.series === 'masters');
+const stories = articles.filter((a) => a.data.series === 'stories');
+const glossary = articles.filter((a) => a.data.series === 'glossary');
+---
+
+<BaseLayout
+  title="Series"
+  description="The Platform Sutra, the patriarchs, stories of the literati, and a glossary of the terms Chan keeps using."
+  path="/series/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Series</h1>
+      <p>One thread at a time, followed to the end. Chapters are written to be read in order, but each stands on its own.</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="series-card">
+      <img src="/assets/alpine-stillness-swiss.jpg" alt="Snow mountains" />
+      <div>
+        <span class="tag">Special series · its own section</span>
+        <h2>The Platform Sutra</h2>
+        <p>
+          The only Chinese text ever called a sutra, read piece by piece. Huineng, the verse on the
+          wall, no-thought, and the argument over sudden and gradual awakening. Because of its size,
+          it has a section of its own.
+        </p>
+        <a class="btn btn-ghost" href="/platform-sutra/">Open the series</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/coastal-sanctuary-portugal.jpg" alt="An old temple by the coast" />
+      <div>
+        <span class="tag">{masters.length} written · lineage in progress</span>
+        <h2>The Patriarchs</h2>
+        <p>
+          From a flower held up on Vulture Peak, to a wall at Shaolin, to Xuyun, who kept the line
+          alive into the twentieth century. One patriarch per piece, read in lineage order.
+        </p>
+        <a class="btn btn-ghost" href="/series/masters/">Open the series</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/curated-hero.jpg" alt="Scholar's landscape" />
+      <div>
+        <span class="tag">{stories.length} written</span>
+        <h2>Stories</h2>
+        <p>
+          Su Dongpo, Wang Wei, Bai Juyi — the smartest officials of their day, running a province by
+          day and sitting with Chan at night. Easy to read, harder to shake off.
+        </p>
+        <a class="btn btn-ghost" href="/series/stories/">Open the series</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/desert-zen-morocco.jpg" alt="A practitioner in the desert" />
+      <div>
+        <span class="tag">{glossary.length} entries · framework in progress</span>
+        <h2>Glossary</h2>
+        <p>
+          Mind is Buddha. Form is emptiness. All beings are equal. The words you have heard a hundred
+          times, taken back to the question each one was answering.
+        </p>
+        <a class="btn btn-ghost" href="/series/glossary/">Open the series</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

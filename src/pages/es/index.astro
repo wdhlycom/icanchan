@@ -1,0 +1,58 @@
+---
+import { isPublished } from '../../lib/publish';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const essays = (
+  await getCollection('essaysEs', ({ data }) => !data.draft && isPublished(data))
+).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+const daily = essays.filter((e) => e.data.section === 'zen-life');
+
+const chapters = await getCollection(
+  'articlesEs',
+  ({ data }) => !data.draft && isPublished(data) && data.series === 'buddhism-101'
+);
+const chapterCount = chapters.length;
+const zenCount = daily.length;
+---
+
+<BaseLayout
+  locale="es"
+  title="Chan"
+  description="Chan es la fuente china de lo que Occidente llama Zen. Lo leemos con la ciencia de hoy, no con fe."
+  path="/es/"
+>
+  <section class="hero container fade-in">
+    <img class="hero-image" src="/assets/start-space.jpg" alt="una piedra cae en agua en calma, tinta" />
+    <div class="hero-text">
+      <h1 class="hero-title">Chan, no Zen.</h1>
+      <p class="hero-lead">
+        Zen es la lectura japonesa; Chan es el rostro chino original. Cuando Occidente lo conoció, ya estaba podado y renombrado. Volvemos a la fuente y lo leemos de nuevo con los ojos de hoy.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="/es/essays/">Lee los ensayos →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:48px">
+      <h2>Dos series, sesenta y cinco lecturas.</h2>
+      <p>Los fundamentos, en orden; la vida diaria, por donde te toque hoy. Cada pieza trae su propia ilustración.</p>
+    </div>
+    <div class="article-grid">
+      <a class="article-card" href="/es/buddhism/">
+        <img class="thumb" src="/assets/misty-peaks-kyoto.jpg" alt="Budismo" loading="lazy" />
+        <span class="tag">Fundamentos</span>
+        <h3>Budismo en 30 capítulos</h3>
+        <span class="card-meta">{chapterCount} capítulos · de la primera verdad al mapa de la mente</span>
+      </a>
+      <a class="article-card" href="/es/essays/">
+        <img class="thumb" src={daily[0]?.data.cover ?? '/assets/misty-peaks-kyoto.jpg'} alt="Chan en la vida diaria" loading="lazy" />
+        <span class="tag">Vida diaria</span>
+        <h3>Chan en la vida diaria</h3>
+        <span class="card-meta">{zenCount} lecturas · del cojín a la mesa, al metro, al insomnio</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,374 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { isPublished } from '../../lib/publish';
+
+/* One patriarch piece appears at a time. Anything not yet written points at the
+   series index, so no link lands on an empty page. */
+const masters = await getCollection(
+  'articles',
+  ({ data }) => !data.draft && isPublished(data) && data.series === 'masters'
+);
+const masterUrl = (id) =>
+  masters.some((m) => m.id === id) ? `/series/masters/${id}/` : '/series/masters/';
+
+/* Timeline. Items with a dedicated piece link to it; the 30-part introduction is
+   marked by chapter number instead of being repeated here. */
+const timeline = [
+  { when: '5th c. BCE', what: 'The Buddha dies', note: 'At eighty, between two sal trees at Kushinagar. His last instruction: do not be careless.', ch: 8 },
+  { when: '3rd c. BCE', what: 'Ashoka and the first split', note: 'Buddhism leaves the Ganges valley and begins to divide. After the first council, the accounts never agree again.', ch: 9 },
+  { when: '1st c. CE', what: 'The Mahayana appears', note: 'Emptiness moves to the front. This is a rereading, not an inheritance - the Theravada schools still do not accept it as the Buddha\'s word.', ch: 11 },
+  { when: '1st c. CE', what: 'Buddhism enters China', note: 'It comes through the western regions. For two centuries Chinese readers understood it through Daoist vocabulary. The method was called matching the meanings.', ch: 12 },
+  { when: 'c. 520', what: 'Bodhidharma lands at Guangzhou', note: 'He meets Emperor Wu, four sentences go nowhere, he crosses the river and faces a wall for nine years.', href: masterUrl('masters-01-bodhidharma'), linkLabel: 'Read: Bodhidharma →' },
+  { when: '638-713', what: 'Huineng', note: 'A firewood seller. He could not read, and he moved the center of Chinese Buddhism from leaving the world to this moment.', href: masterUrl('masters-02-huineng-legacy'), linkLabel: 'Read: after Huineng →' },
+  { when: '8th-9th c.', what: 'The Five Houses form', note: 'Linji\'s shout, Caodong\'s silence, Guiyang\'s circle, Yunmen\'s one word, Fayan\'s six signs. One mind, five ways of striking it.', href: masterUrl('masters-03-five-houses'), linkLabel: 'Read: the Five Houses →' },
+  { when: '845', what: 'The Great Persecution', note: 'Emperor Wuzong of Tang shut the monasteries. Schools that lived on estates and imperial patronage collapsed. Chan, which grew its own food on the mountain, survived.', ch: 13 },
+  { when: '10th-13th c.', what: 'Koans and literary Chan', note: 'Chan began recording itself. The Transmission of the Lamp, the Blue Cliff Record - a school that claimed not to rely on words left more words than anyone.', ch: 18 },
+  { when: '12th c.', what: 'Into Japan', note: 'Eisai brought Rinzai; Dogen brought Caodong. Most of what the West now calls Zen descends from these two lines.' },
+];
+
+const patriarchs = [
+  { gen: 'First', who: 'Bodhidharma', line: 'He put looking first. Not relying on words does not mean opposing words; it means words do not reach that far.', href: masterUrl('masters-01-bodhidharma') },
+  { gen: 'Second', who: 'Huike', line: 'The standing-in-snow, cut-off-arm story came later. The sentence is real: "I cannot find the mind." The mind could not be found, so it was at peace.' },
+  { gen: 'Third', who: 'Sengcan', line: 'The Faith in Mind opens: "The great way is not difficult; it only dislikes picking and choosing." The difficulty is not the way. It is the urge to choose.' },
+  { gen: 'Fourth', who: 'Daoxin', line: 'One-practice samadhi. He moved practice out of the mountains into communities of hundreds. Chan became an organization here.' },
+  { gen: 'Fifth', who: 'Hongren', line: 'The East Mountain teaching, farming and Chan together - you eat what you grow. That rule saved the school during the persecution of 845.' },
+  { gen: 'Sixth', who: 'Huineng', line: 'A firewood seller who could barely read, and who moved the weight of Buddhism from leaving the world to this moment.' },
+];
+
+const modern = [
+  { who: 'Taixu', years: '1890-1947', line: 'Humanistic Buddhism. "Look up to the Buddha; complete it in a human life." He moved practice back from after death to this life.' },
+  { who: 'Laiguo', years: '1881-1953', line: 'Gaomin Monastery. The strictest meditation hall rules in China, and the keeper of the seven-day retreat.' },
+  { who: 'Sheng Yen', years: '1930-2009', line: 'Dharma Drum Mountain, "Chinese Chan." One of the first Chinese monks to explain Han Chan to the West in modern academic language.' },
+  { who: 'Thich Nhat Hanh', years: '1926-2022', line: 'Vietnamese, Linji line. Half of the Chan the West has met came through this road.' },
+  { who: 'D. T. Suzuki', years: '1870-1966', line: 'Not in the dharma line - a translator and interpreter. The Zen the West caught was the version he shaped, and that debt needs its own entry.' },
+];
+
+const boundaries = [
+  'Not a religion. Not one sentence here asks you to believe.',
+  'Not a meditation class. Practice is one third of the three trainings.',
+  'Not a translation of Japanese Zen. Where the two differ, this page says so.',
+  'Not a dharma certification. This page traces a history of thought, not a transmission record.',
+];
+---
+
+<BaseLayout
+  locale="en"
+  title="Lineage"
+  description="From a flower held up on Vulture Peak, to a wall at Shaoshi, to the person reading this now. The road this line took, including where it broke."
+  path="/lineage/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Lineage</h1>
+      <p>Follow the source upstream, and point at every stretch on the way.</p>
+    </div>
+    <img class="page-head-banner" src="/assets/page-head-lineage.jpg" alt="A stream running down through layered distant mountains" />
+  </section>
+
+  <section class="section container" style="padding-top:28px">
+    <div class="reading">
+      <h2 class="sec-h">One flower, one man, one road west</h2>
+      <p class="body-copy">
+        <b>West.</b> At Vulture Peak the Buddha held up a flower and said nothing. Kasyapa smiled. The whole of Chan begins with that smile - according to Chan.
+      </p>
+      <p class="body-copy">
+        Be clear about it: the earliest complete record of this story appears in two Northern Song lamp records, about fifteen hundred years after the Buddha died. The earlier sutras do not have it.
+      </p>
+      <p class="body-copy">
+        So it is not history. It is a self-explanation. Song dynasty Chan had to tell people why this way of living - no scripture, no images, no words - was legitimately Buddhist. The flower was the answer.
+      </p>
+      <p class="body-copy">
+        The list of twenty-eight Indian patriarchs comes from the same Song compilations. The Indian half is barely verifiable. Yinshun, in <i>A History of Chinese Chan</i>, treats the line as constructed to connect a lineage. Yanagida Seizan took it apart more thoroughly.
+      </p>
+      <p class="pull-line">Tell the story. Mark the source. A tradition worth trusting is one that can survive having its own origin examined.</p>
+      <p class="body-copy">
+        Around 520 a monk from South India landed at Guangzhou. He met Emperor Wu, four sentences went nowhere, he crossed the Yangtze and sat facing a wall at Shaoshi for nine years. What he left behind is two words: <b>wall-gazing</b>. Not metaphysics. One action - sit facing a wall, and look.
+      </p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:36px">
+      <h2>Six people, six changes</h2>
+      <p><b>East.</b> No biographies. Only where each one pushed the thing an inch further. Names with a piece written can be clicked; the rest are queued in the Patriarchs series.</p>
+    </div>
+
+    <ol class="pat-list">
+      {patriarchs.map((p) => (
+        <li>
+          <span class="pat-gen">{p.gen}</span>
+          {p.href ? (
+            <a class="pat-who pat-link" href={p.href}>{p.who}</a>
+          ) : (
+            <span class="pat-who">{p.who}<span class="pat-todo">piece pending</span></span>
+          )}
+          <span class="pat-line">{p.line}</span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:36px">
+      <h2>A thousand years, a few turns</h2>
+    </div>
+    <p class="timeline-note">
+      <b>After.</b> All dates are approximate. Early Buddhist material was transmitted orally for centuries and first written down in the first century BCE - which is why "what year did the Buddha say it" is itself a scholarly argument.
+    </p>
+
+    <ol class="timeline">
+      {timeline.map((t) => (
+        <li class="tl-item">
+          <span class="tl-when">{t.when}</span>
+          <div class="tl-body">
+            <h3 class="tl-what">{t.what}</h3>
+            <p class="tl-note">{t.note}</p>
+            <div class="tl-links">
+              {t.href && <a href={t.href}>{t.linkLabel}</a>}
+              {t.ch && <span class="tl-ch">Buddhism 101 · chapter {t.ch}</span>}
+            </div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="reading">
+      <h2 class="sec-h">Xuyun, and the break</h2>
+      <p class="body-copy">
+        <b>Modern.</b> Xuyun (1840-1959). One man held the transmission of five houses at once - Linji, Caodong, Guiyang, Yunmen, Fayan. He rebuilt Nanhua, Huineng's monastery, and Yunmen, and reconnected a line that had snapped.
+      </p>
+      <p class="body-copy">
+        There are many stories about his age and his powers. They are not repeated here. He matters not for those, but because in that century he kept the line from ending in the twentieth.
+      </p>
+      <p class="body-copy">
+        The other side has to be said too. After the middle of the twentieth century, the transmission system of Chinese Buddhism collapsed as a system: monasteries occupied, communities dispersed, transmission interrupted. What was restored later was partly a real continuation and partly a re-issue.
+      </p>
+      <p class="body-copy">
+        So "receiving the dharma scroll" today is mostly an institutional credential. It proves who recognizes you, not where you have arrived. The same is true of this line - any claim that a scroll is a certificate of awakening does not need to be believed.
+      </p>
+    </div>
+
+    <ul class="modern-list">
+      {modern.map((m) => (
+        <li>
+          <span class="md-who">{m.who}</span>
+          <span class="md-years">{m.years}</span>
+          <span class="md-line">{m.line}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="domain-block">
+    <div class="container">
+      <div class="reading">
+        <p class="body-copy">
+          I have not received a dharma scroll. No teacher called me into his room at midnight and asked, "What was your face before your parents were born?" I have not taken the stick in a meditation hall, have not sat through a full seven-day retreat, and do not claim to be awakened.
+        </p>
+        <p class="body-copy">
+          What I can offer is this: I have read these words. I have sat these sits. Some of these sentences have changed what I do. That is why this page is not called "transmission" but "where it came from" - one person standing downstream, walking upstream, pointing at each stretch of the river.
+        </p>
+
+        <ul class="confession">
+          <li>
+            <span class="cf-label">What I received</span>
+            <span class="cf-body">Texts · methods · questions</span>
+          </li>
+          <li>
+            <span class="cf-label">What I did not</span>
+            <span class="cf-body">Dharma scroll · ritual · a teacher's sanction</span>
+          </li>
+          <li>
+            <span class="cf-label">What I do not pretend</span>
+            <span class="cf-body">Awakening · certification · powers</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="reading" style="text-align:center;margin-top:64px">
+        <img class="domain-glyph" src="/assets/chan-logo.png" alt="" aria-hidden="true" />
+        <h2 class="serif" style="font-size:clamp(30px,4vw,42px);margin:14px 0 18px">I am not anyone's heir.</h2>
+        <p class="body-copy" style="font-size:17px;text-wrap:balance">
+          <b>Where it reaches me.</b> I am a person drinking water downstream. The next three lines are this site's domain name, and they are the whole of my claim.
+        </p>
+      </div>
+
+      <div class="domain-rows">
+        <div class="domain-row">
+          <span class="zh-line">我参禅</span>
+          <span class="en-line">I take part in Chan.</span>
+          <p>The plainest reading. Not "I believe in Chan" - Chan is not for believing. Sit down and look first; then ask for evidence.</p>
+        </div>
+        <div class="domain-row">
+          <span class="zh-line">我能禅</span>
+          <span class="en-line">I am able to Chan.</span>
+          <p>
+            The second layer is the claim: this is a capacity, not an identity. Not reserved for monks, nor for the spiritually gifted. Turning around to look at your own mind once is enough to count.
+          </p>
+        </div>
+        <div class="domain-row">
+          <span class="zh-line">禅即日用</span>
+          <span class="en-line">Chan is what the day is made of.</span>
+          <p>
+            The conclusion: if it only works on a cushion, it does not work. Washing dishes, answering email, sitting with someone who is sad - the same thing, in different postures.
+          </p>
+        </div>
+      </div>
+
+      <div class="domain-coda">
+        <p>到最后，无我、无参、也无禅。</p>
+        <p>
+          It was never about getting Chan right. It was about letting it dissolve into the day - until there is no "I" doing it, no technique to display, and nothing left called Chan. No self, no practice, no Chan. Only this day, lived through.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="reading">
+      <h2 class="sec-h">What this line is not</h2>
+      <ul class="pillar-list" style="margin-top:20px">
+        {boundaries.map((b) => <li>{b}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="reading">
+      <h2 class="sec-h">To check it yourself, start with these three</h2>
+      <ul class="ref-list">
+        <li>
+          <span class="rf-t">Yinshun, <i>A History of Chinese Chan</i></span>
+          <span class="rf-n">The most rigorous critique of the lineage. He treats the lamp records as historical documents, not relics.</span>
+        </li>
+        <li>
+          <span class="rf-t">Yanagida Seizan, <i>A Study of Early Chan Historical Texts</i></span>
+          <span class="rf-n">How the lamp records were compiled, layer by layer. Japanese scholarship; the full translation is hard to find, so start with his shorter works.</span>
+        </li>
+        <li>
+          <span class="rf-t">Ge Zhaoguang, <i>A History of Chinese Chan Thought</i></span>
+          <span class="rf-n">Intellectual history, not apologetics. For readers who want to know what people at the time were actually arguing about.</span>
+        </li>
+      </ul>
+      <p class="body-copy" style="margin-top:28px">
+        If anything on this page is wrong, tell me and I will correct it. That is the one thing it has over a dharma scroll.
+      </p>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:36px">
+      <h2>Every patriarch, one piece</h2>
+      <p>Each figure on this line has a piece in the Patriarchs series. Bodhidharma, Huineng's legacy, and the Five Houses are written; the rest are queued in the lineage.</p>
+    </div>
+    <p style="max-width:880px;margin:0 auto">
+      <a class="btn btn-ghost" href="/series/masters/">Open the Patriarchs →</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .sec-h { font-size: clamp(28px, 3.8vw, 38px); margin: 14px 0 26px; line-height: 1.28; }
+  .pull-line {
+    font-family: var(--serif);
+    font-size: clamp(22px, 2.6vw, 27px);
+    line-height: 1.7;
+    color: var(--forest);
+    padding: 24px 28px;
+    border: 1px dashed var(--gold);
+    border-radius: 12px;
+    margin: 40px 0;
+  }
+
+  .confession { list-style: none; padding: 0; margin: 44px 0 0; display: grid; gap: 20px; }
+  .confession li { display: grid; grid-template-columns: 190px 1fr; gap: 20px; align-items: baseline; }
+  .cf-label { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-dark); }
+  .cf-body { font-family: var(--serif); font-size: 21px; line-height: 1.5; }
+
+  .pat-list { list-style: none; padding: 0; margin: 0 auto; max-width: 880px; display: grid; gap: 34px; }
+  .pat-list li { display: grid; grid-template-columns: 66px 180px 1fr; gap: 6px 24px; align-items: baseline; }
+  .pat-gen { font-size: 11.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); }
+  .pat-who { font-family: var(--serif); font-size: 26px; letter-spacing: 0.01em; color: var(--forest); }
+  .pat-link { color: var(--forest); border-bottom: 1px solid var(--gold-light); transition: color 0.25s, border-color 0.25s; }
+  .pat-link:hover { color: var(--gold-dark); border-color: var(--gold); }
+  .pat-todo { font-size: 11px; letter-spacing: 0.1em; color: var(--faint); margin-left: 10px; }
+  .pat-line { font-size: 16px; line-height: 1.95; color: var(--body-text); }
+
+  .timeline-note {
+    max-width: 780px;
+    margin: 0 auto 52px;
+    padding: 16px 20px;
+    border: 1px dashed var(--gold-light);
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.95;
+    color: var(--muted);
+  }
+  .timeline { list-style: none; padding: 0; margin: 0 auto; max-width: 880px; position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 118px;
+    top: 12px;
+    bottom: 12px;
+    width: 1px;
+    background-image: linear-gradient(to bottom, var(--divider) 42%, transparent 0);
+    background-size: 1px 7px;
+  }
+  .tl-item { display: grid; grid-template-columns: 104px 1fr; gap: 34px; padding: 0 0 44px; position: relative; }
+  .tl-item::after {
+    content: '';
+    position: absolute;
+    left: 115px;
+    top: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 0 5px var(--paper);
+  }
+  .tl-when { font-size: 12px; letter-spacing: 0.1em; color: var(--gold-dark); text-align: right; padding-top: 3px; line-height: 1.7; }
+  .tl-body { padding-left: 2px; }
+  .tl-what { font-size: 24px; margin-bottom: 8px; letter-spacing: 0.01em; }
+  .tl-note { font-size: 15.5px; line-height: 1.9; color: var(--muted); margin-bottom: 10px; }
+  .tl-links { display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline; }
+  .tl-links a { font-size: 13.5px; color: var(--gold-dark); border-bottom: 1px solid var(--gold-light); padding-bottom: 1px; transition: border-color 0.25s; }
+  .tl-links a:hover { border-color: var(--gold); }
+  .tl-ch { font-size: 11.5px; letter-spacing: 0.1em; color: var(--faint); }
+
+  .modern-list {
+    list-style: none;
+    padding: 0;
+    margin: 56px auto 0;
+    max-width: 880px;
+    display: grid;
+    gap: 22px;
+  }
+  .modern-list li { display: grid; grid-template-columns: 180px 96px 1fr; gap: 6px 20px; align-items: baseline; }
+  .md-who { font-family: var(--serif); font-size: 21px; letter-spacing: 0.01em; color: var(--forest); }
+  .md-years { font-size: 11.5px; letter-spacing: 0.08em; color: var(--faint); }
+  .md-line { font-size: 15.5px; line-height: 1.9; color: var(--muted); }
+
+  .ref-list { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 24px; }
+  .ref-list li { display: grid; gap: 6px; padding: 16px 20px; border: 1px dashed var(--gold-light); border-radius: 8px; }
+  .rf-t { font-family: var(--serif); font-size: 19px; line-height: 1.6; }
+  .rf-n { font-size: 14.5px; line-height: 1.85; color: var(--muted); }
+
+  /* The English heading carries the line; the Chinese line above it is the domain reading. */
+  .domain-row .en-line { font-style: normal; font-family: var(--serif); font-size: 22px; color: var(--forest); display: block; margin-bottom: 4px; }
+  .domain-coda p:first-child { font-size: clamp(20px, 2.6vw, 27px); letter-spacing: 0.08em; }
+
+  @media (max-width: 900px) {
+    .confession li { grid-template-columns: 1fr; gap: 4px; }
+    .pat-list li { grid-template-columns: 58px 1fr; }
+    .pat-line { grid-column: 1 / -1; }
+    .timeline::before { left: 4px; }
+    .tl-item { grid-template-columns: 1fr; gap: 8px; padding-left: 26px; }
+    .tl-item::after { left: 1px; top: 6px; }
+    .tl-when { text-align: left; }
+    .modern-list li { grid-template-columns: 1fr; gap: 3px; }
+  }
+</style>

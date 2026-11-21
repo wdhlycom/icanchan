@@ -1,0 +1,205 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { type Locale } from '../i18n/ui';
+import { getAlternateIndex, lookupAlternates } from '../lib/alternates.js';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  path?: string;
+  locale?: Locale;
+  /** 关闭语言互链（例如 404 这种没有对应译文的页面） */
+  noAlternates?: boolean;
+  /** 对方语言的真实路径。两边栏目不同名时必须显式给，否则会指到不存在的地址 */
+  altPath?: string;
+  /** 结构化数据面包屑：完整三层（含文章标题）。只进 JSON-LD，不影响界面 UI 面包屑 */
+  breadcrumb?: { label: string; href?: string }[];
+}
+
+const {
+  title,
+  description = 'Chan is the Chinese source of Zen. We read it with modern science, not faith.',
+  path = Astro.url.pathname,
+  locale = 'en',
+  noAlternates = false,
+  altPath,
+  breadcrumb = [],
+} = Astro.props;
+
+const isZh = locale === 'zh';
+const isEs = locale === 'es';
+const inLang = isZh ? 'zh-CN' : isEs ? 'es' : 'en';
+const siteUrl = Astro.site ?? new URL('https://icanchan.com');
+const siteRoot = siteUrl.origin;
+
+/* 三语言互链：只指向这一轮真的会生成、且确实存在的译文页面。
+   西语是节译，多数文章没有西语版，这些页面就不写 es，绝不硬补一个 404 地址。 */
+const alternateIndex = await getAlternateIndex();
+const alts = lookupAlternates(alternateIndex, path, locale);
+const rel = alts.rel;
+const defaultZhPath = rel === '/' ? '/zh/' : `/zh${rel}`;
+/* 命中的页面严格按索引走；没命中的（404 等）保留原来的算法做兼容。 */
+const enPath = alts.found ? alts.en : isZh ? (altPath ?? rel) : rel;
+const zhPath = alts.found ? alts.zh : isZh ? defaultZhPath : (altPath ?? defaultZhPath);
+const esPath = alts.found ? alts.es : undefined;
+
+const canonical = new URL(path, siteUrl).toString();
+const fullTitle =
+  title === 'Chan'
+    ? isZh
+      ? 'Chan — 禅，Zen 的中国源头'
+      : isEs
+        ? 'Chan — la fuente china del Zen'
+        : 'Chan — the Chinese source of Zen'
+    : `${title} · Chan`;
+
+/* 文章说明卡只给真正的内容页加，栏目页和工具页不加。 */
+const articleData = alts.isArticle ? alts.data : undefined;
+const articleImage = articleData?.cover
+  ? new URL(articleData.cover, siteUrl).toString()
+  : undefined;
+
+const websiteId = `${siteRoot}/#website`;
+const orgId = `${siteRoot}/#organization`;
+/* 三种语言各有自己的作者页：中文「源流」、西语「Origen」、英文 About。
+   各有各的标识，免得中文或西语文章的作者字段指去一页英文。 */
+const authorPagePath = isZh ? '/zh/lineage/' : isEs ? '/es/lineage/' : '/about/';
+const authorPageUrl = new URL(authorPagePath, siteUrl).toString();
+const authorId = `${authorPageUrl}#author`;
+const isAuthorPage =
+  path === '/about/' || path === '/zh/lineage/' || path === '/es/lineage/';
+/* 全都取自关于页上已经写好的原句，不新编履历。 */
+const authorDescription = isZh
+  ? '我没接过法卷。我能拿出来的是这些：这些字我读过，这些坐我坐过，这些话在我身上起过作用。我接到的：文本 · 方法 · 问题；我接不到的：法卷 · 仪轨 · 师承。'
+  : isEs
+    ? 'No recibí un certificado de linaje. Lo que puedo poner encima de la mesa es esto: estos textos los leí, estas sentadas las hice, estas palabras me hicieron efecto. Lo que recibí: textos · métodos · preguntas; lo que no recibí: linaje · ritual · maestro.'
+    : 'I grew up in China with no religion, and a lasting fondness for Buddhist thought. I read the classics; I do not go to temples to bow. Modern education made me a rational critic first.';
+
+const graph = [
+  {
+    '@type': 'WebSite',
+    '@id': websiteId,
+    url: `${siteRoot}/`,
+    name: 'Chan',
+    alternateName: '参禅 / icanchan',
+    description:
+      'Chan is the Chinese source of Zen. Buddhism, the Platform Sutra and the science of mind — read without faith.',
+    inLanguage: ['en', 'zh-CN', 'es'],
+    publisher: { '@id': orgId },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${siteRoot}/search/?q={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  },
+  {
+    '@type': 'Organization',
+    '@id': orgId,
+    name: 'Chan / icanchan',
+    url: `${siteRoot}/`,
+  },
+  {
+    '@type': 'Person',
+    '@id': authorId,
+    name: 'Hu',
+    url: authorPageUrl,
+    /* 每页留这一个名字就够了：文章的 author 字段要有地方落脚，否则是空引用。
+       真正的介绍和联系方式只在关于页写一份 —— 353 页各重复一遍并不加分。 */
+    ...(isAuthorPage
+      ? { description: authorDescription, email: 'wdhly.com@gmail.com' }
+      : {}),
+  },
+];
+
+if (articleData) {
+  graph.push({
+    '@type': 'BlogPosting',
+    '@id': `${canonical}#article`,
+    headline: title,
+    description,
+    url: canonical,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+    inLanguage: inLang,
+    ...(articleData.publishDate ? { datePublished: articleData.publishDate } : {}),
+    ...(articleImage ? { image: articleImage } : {}),
+    author: { '@id': authorId },
+    publisher: { '@id': orgId },
+    isPartOf: { '@id': websiteId },
+  });
+}
+
+/* 面包屑最后一层就是本页，补上自己的地址。 */
+if (breadcrumb.length > 0) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumb.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.label,
+      item: new URL(item.href ?? path, siteUrl).toString(),
+    })),
+  });
+}
+
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(
+  /</g,
+  '\\u003c',
+);
+---
+
+<!doctype html>
+<html lang={isZh ? 'zh' : isEs ? 'es' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Hu" />
+    <link rel="canonical" href={canonical} />
+    <script type="application/ld+json" set:html={jsonLd} />
+    {!noAlternates && enPath && <link rel="alternate" hreflang="en" href={new URL(enPath, siteUrl)} />}
+    {!noAlternates && zhPath && <link rel="alternate" hreflang="zh" href={new URL(zhPath, siteUrl)} />}
+    {!noAlternates && esPath && <link rel="alternate" hreflang="es" href={new URL(esPath, siteUrl)} />}
+    {!noAlternates && enPath && <link rel="alternate" hreflang="x-default" href={new URL(enPath, siteUrl)} />}
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="alternate" type="application/rss+xml" title="Chan" href={isZh ? '/zh/rss.xml' : '/rss.xml'} />
+    <meta property="og:type" content={articleData ? 'article' : 'website'} />
+    <meta property="og:site_name" content="Chan" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={isZh ? 'zh_CN' : isEs ? 'es_ES' : 'en_US'} />
+    {articleImage && <meta property="og:image" content={articleImage} />}
+    {articleImage && <meta name="twitter:image" content={articleImage} />}
+    {articleData?.publishDate && <meta property="article:published_time" content={articleData.publishDate} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var dark = saved
+            ? saved === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body id="top">
+    <Header locale={locale} noAlternates={noAlternates} altPath={altPath} />
+    <main data-pagefind-body>
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

@@ -1,0 +1,94 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TinaIsland from '../../../components/tina/TinaIslandLocal.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  /* 第 1 章有两篇（卖柴人、风动幡动）。章号相同就按 id 排，保证上下篇稳定。 */
+  const articles = (
+    await getCollection('articlesZh', ({ data }) => !data.draft && isPublished(data) && data.series === 'platform-sutra')
+  ).sort((a, b) => a.data.chapter - b.data.chapter || a.id.localeCompare(b.id));
+  // 英文版《坛经》章节尚未开写：没有对应页就不输出 hreflang，免得指向 404
+  const enIds = new Set((await getCollection('articles', ({ data }) => !data.draft && isPublished(data))).map((e) => e.id));
+  return articles.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      prev: articles[index - 1],
+      next: articles[index + 1],
+      hasEn: enIds.has(entry.id),
+    },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'articlesZh'>;
+  prev?: CollectionEntry<'articlesZh'>;
+  next?: CollectionEntry<'articlesZh'>;
+  hasEn: boolean;
+}
+
+const { entry, prev, next, hasEn } = Astro.props;
+const { Content } = await render(entry);
+/* 只有 `npm run tina` 才把正文包成可编辑区块；正常构建仍旧是原来那个 div。 */
+const tinaMode = process.env.TINA_DEV === '1';
+---
+
+<BaseLayout
+  locale="zh"
+  noAlternates={!hasEn}
+  title={entry.data.title}
+  description={entry.data.description}
+  path={`/zh/platform-sutra/${entry.id}/`}
+>
+  <article>
+    <Breadcrumb
+      items={[
+        { label: '首页', href: '/zh/' },
+        { label: '坛经', href: '/zh/platform-sutra/' },
+      ]}
+    />
+
+
+    <header class="article-head reading">
+      <h1>{entry.data.title}</h1>
+    </header>
+
+    {tinaMode ? (
+      <TinaIsland
+        name="zhArticle"
+        wrapper={{ tag: 'div', className: 'prose reading' }}
+        params={{ slug: entry.id }}
+        primary
+      >
+        <Content />
+      </TinaIsland>
+    ) : (
+      <div class="prose reading">
+        <Content />
+      </div>
+    )}
+
+    <nav class="article-nav reading">
+      <div>
+        {prev && (
+          <a href={`/zh/platform-sutra/${prev.id}/`}>
+            <span>上一篇</span>
+            {prev.data.title}
+          </a>
+        )}
+      </div>
+      <div style="text-align:right">
+        {next && (
+          <a href={`/zh/platform-sutra/${next.id}/`}>
+            <span>下一篇</span>
+            {next.data.title}
+          </a>
+        )}
+      </div>
+    </nav>
+  </article>
+</BaseLayout>

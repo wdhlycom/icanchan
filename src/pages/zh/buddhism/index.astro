@@ -1,0 +1,208 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const essays = await getCollection('essaysZh', ({ data }) => !data.draft && isPublished(data));
+const guide = essays.find((e) => e.data.section === 'buddhism-guide');
+const extend = essays
+  .filter((e) => e.data.section === 'buddhism')
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+
+const chapters = await getCollection(
+  'articlesZh',
+  ({ data }) => !data.draft && isPublished(data) && data.series === 'buddhism-101'
+);
+const chapterCount = chapters.length;
+/* 文章按周逐篇出现；还没到的章节先指到连载目录，免得点进去是空页 */
+const chapterUrl = (id) =>
+  chapters.some((c) => c.id === id) ? `/zh/series/buddhism-101/${id}/` : '/zh/series/buddhism-101/';
+
+const paths = [
+  { who: '完全没接触过', what: '从第 1 章开始，一路读下去。三十章约五万六千字，慢一点两周。', href: chapterUrl('01-abundant-everything-empty-something') },
+  { who: '读过一些流行的书', what: '从第 3、4 章进，然后跳到第 28 章，看正念研究的边界在哪。', href: chapterUrl('03-not-what-you-think') },
+  { who: '不想读，只想练', what: '第 22 章讲知与行为什么脱节，第 23 章给做法，第 25 章讲情绪上来的那一秒。', href: chapterUrl('22-the-knowing-doing-gap') },
+  { who: '有底子，想看禅', what: '跳过基础，直接进坛经板块。慧能会把这一栏的话重新说一遍，角度完全不同。', href: '/zh/platform-sutra/' },
+];
+---
+
+<BaseLayout
+  locale="zh"
+  title="佛学基础"
+  description="佛学不只是摆个垫子打坐。这一栏有主干、有导读、有延伸，三条路都摆在明处。"
+  path="/zh/buddhism/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>佛学基础</h1>
+      <p>学佛不只是摆个垫子打坐。西方留下了打坐，丢掉了其余部分。</p>
+    </div>
+  </section>
+
+  {guide && (
+    <section class="section container" style="padding-top:20px;padding-bottom:48px">
+      <a class="guide-card" href={`/zh/essays/${guide.id}/`}>
+        <span class="guide-kicker">栏目导读 · 建议先读这一篇</span>
+        <h2>{guide.data.title}</h2>
+        <span class="card-meta">读完再决定从哪一章进</span>
+      </a>
+    </section>
+  )}
+
+  <section class="section container" style="padding-top:0">
+    <div class="main-track">
+      <div class="track-head">
+        <h2>入门之路</h2>
+        <p>
+          三十章，从第一个真相走到一张用得上的心智地图。有编号、前后咬合、按顺序读。
+          这一栏所有别的东西，都是它的补充或另一个角度的重讲。
+        </p>
+        <ul class="track-meta">
+          <li>{chapterCount} 章</li>
+          <li>约 5.6 万字</li>
+          <li>四周读完</li>
+        </ul>
+        <a class="btn-track" href="/zh/series/buddhism-101/">进入连载 →</a>
+      </div>
+      <div class="track-peek">
+        {chapters.slice(0, 5).sort((a, b) => a.data.chapter - b.data.chapter).map((c) => (
+          <a class="peek-row" href={`/zh/series/buddhism-101/${c.id}/`}>
+            <span class="peek-num">{String(c.data.chapter).padStart(2, '0')}</span>
+            <span class="peek-ttl">{c.data.title}</span>
+          </a>
+        ))}
+        <a class="peek-more" href="/zh/series/buddhism-101/">还有 {chapterCount - 5} 章 →</a>
+      </div>
+    </div>
+  </section>
+
+  <img
+    class="band-banner"
+    src="/assets/page-head-buddhism.jpg"
+    alt="山间石径顺着松林通向远处的山门"
+    loading="lazy"
+  />
+
+  <section class="section container" style="padding-top:52px">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>主干的旁边</h2>
+      <p>这些不编号，也不需要按顺序。它们是主干没展开的角度。</p>
+    </div>
+    <ul class="read-index">
+      {extend.map((entry) => (
+        <li>
+          <a href={`/zh/essays/${entry.id}/`}>
+            <span class="ttl">{entry.data.title}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="section container">
+    <a class="axis-card" href="/zh/lineage/">
+      <div>
+        <h2>从菩提树到此刻读它的一个人</h2>
+        <p>
+          上面这些都在讲「它说了什么」，那一页讲「它怎么走到我这里」：佛陀入灭、部派分裂、达摩渡江、
+          会昌法难、五家成形、虚云续脉——中间断过，也补过。
+        </p>
+        <span class="card-meta">10 个节点 · 4 篇人物短章 · 一条到我为止的线</span>
+      </div>
+      <span class="axis-arrow">→</span>
+    </a>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>按你现在的状态选</h2>
+    </div>
+    <ul class="entry-list">
+      {paths.map((p) => (
+        <li>
+          <a href={p.href}>
+            <span class="entry-who">{p.who}</span>
+            <span class="entry-what">{p.what}</span>
+            <span class="entry-arrow">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .guide-card {
+    display: block;
+    padding: 44px 48px;
+    background: var(--paper-warm);
+    transition: background 0.4s;
+  }
+  .guide-card:hover { background: var(--white); }
+  .guide-kicker { font-size: 11px; letter-spacing: 0.22em; color: var(--gold-dark); }
+  .guide-card h2 {
+    font-size: clamp(28px, 3.6vw, 38px);
+    margin: 14px 0 14px;
+    line-height: 1.25;
+    transition: color 0.3s;
+  }
+  .guide-card:hover h2 { color: var(--gold-dark); }
+  .guide-card p { color: var(--muted); font-size: 16.5px; line-height: 1.85; margin-bottom: 14px; max-width: 720px; }
+
+  .main-track { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .track-head h2 { font-size: clamp(32px, 4vw, 44px); margin: 14px 0 18px; }
+  .track-head > p { color: var(--muted); font-size: 16.5px; line-height: 1.9; margin-bottom: 24px; }
+  .track-meta { list-style: none; padding: 0; margin: 0 0 30px; display: flex; gap: 28px; flex-wrap: wrap; }
+  .track-meta li { font-size: 12px; letter-spacing: 0.14em; color: var(--gold-dark); }
+  .track-peek { display: grid; gap: 2px; }
+  .peek-row {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 16px;
+    align-items: baseline;
+    padding: 14px 10px;
+    transition: background 0.35s, color 0.25s;
+  }
+  .peek-row:hover { background: linear-gradient(90deg, rgba(197, 168, 128, 0.08), transparent 70%); color: var(--gold-dark); }
+  .peek-num { font-family: var(--serif); font-size: 14px; color: var(--gold-dark); }
+  .peek-ttl { font-family: var(--zh-head); font-size: 19px; line-height: 1.45; }
+  .peek-more { font-size: 12px; letter-spacing: 0.14em; color: var(--faint); padding: 16px 10px 0; transition: color 0.25s; }
+  .peek-more:hover { color: var(--gold-dark); }
+
+  .entry-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+  .entry-list a {
+    display: grid;
+    grid-template-columns: 1fr 20px;
+    gap: 8px 16px;
+    padding: 24px 22px;
+    height: 100%;
+    transition: background 0.35s;
+  }
+  .entry-list a:hover { background: var(--paper-warm); }
+  .entry-who { font-family: var(--zh-head); font-size: 19px; color: var(--ink); }
+  .entry-what { font-size: 14.5px; line-height: 1.8; color: var(--muted); grid-column: 1; }
+  .entry-arrow { grid-column: 2; grid-row: 1; color: var(--gold); font-size: 15px; }
+
+  .axis-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: center;
+    padding: 44px 48px;
+    background: var(--paper-warm);
+    transition: background 0.4s;
+  }
+  .axis-card:hover { background: var(--white); }
+  .axis-card h2 { font-size: clamp(26px, 3.4vw, 36px); margin: 12px 0 14px; transition: color 0.3s; }
+  .axis-card:hover h2 { color: var(--gold-dark); }
+  .axis-card p { color: var(--muted); font-size: 16px; line-height: 1.9; max-width: 720px; margin-bottom: 14px; }
+  .axis-arrow { font-size: 22px; color: var(--gold); }
+
+  @media (max-width: 900px) {
+    .main-track { grid-template-columns: 1fr; gap: 32px; }
+    .axis-card { grid-template-columns: 1fr; padding: 32px 24px; }
+    .axis-arrow { display: none; }
+    .entry-list { grid-template-columns: 1fr; }
+    .guide-card { padding: 32px 24px; }
+  }
+</style>

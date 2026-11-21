@@ -1,0 +1,47 @@
+# Chan / 参禅 (icanchan.com)
+
+> 一个用现代科学眼光读中国禅宗的网站。核心主张两件事：禅（Chan）是西方所谓 Zen 的中国源头，二者不该混为一谈；佛教也不等于冥想，冥想只是戒、定、慧三学与八正道里的一支。内容覆盖佛学基础、《坛经》、公案、禅与现代科学（神经科学、心理学）、以及日常可操作的修心方法。不谈信仰，不谈神通，引用证据但不硬凑。
+>
+> 站点有三种语言：英文（原始版）、简体中文（主版本，内容与行文均已本地化而非直译）、西班牙文（节译）。共 353 篇文章。文章按周发布，页面本身不显示日期。
+
+## 从哪里开始
+
+- [英文首页](https://icanchan.com/)：Chan is not Zen — 英文入口。
+- [中文首页](https://icanchan.com/zh/)：禅，不是 Zen — 中文主版本入口。
+- [西语首页](https://icanchan.com/es/)：Chan es la fuente china del Zen — 西语入口。
+- [About](https://icanchan.com/about/)：站点与作者的说明（英文）。
+- [源流](https://icanchan.com/zh/lineage/)：网站声明与作者自述（中文）。
+- [Origen](https://icanchan.com/es/lineage/)：网站声明与作者自述（西语）。
+
+## 中文主要栏目
+
+- [佛学基础](https://icanchan.com/zh/buddhism/)：三学、八正道、四圣谛，以及佛教不止冥想的全貌。
+- [禅与科学](https://icanchan.com/zh/science-of-chan/)：用神经科学与心理学理解禅的机制。
+- [禅生活](https://icanchan.com/zh/essays/)：情绪、关系、无常等日常场景里的短章。
+- [公案](https://icanchan.com/zh/koans/)：公案的语境与读法，不当谜语猜。
+- [坛经](https://icanchan.com/zh/platform-sutra/)： 《六祖坛经》逐品原文与现代解读。
+- [祖师传](https://icanchan.com/zh/lineage/)：禅宗法脉与人物。
+- [系列连载](https://icanchan.com/zh/series/)：佛学基础 101、名词解释、祖师、故事四条连载线。
+
+## 英文主要栏目
+
+- [Buddhism](https://icanchan.com/buddhism/)：Buddhism 101 — the full path beyond meditation.
+- [Science of Chan](https://icanchan.com/science-of-chan/)：Chan read through neuroscience and psychology.
+- [Essays](https://icanchan.com/essays/)：Chan in daily life.
+- [Koans](https://icanchan.com/koans/)：Koans in context.
+- [Platform Sutra](https://icanchan.com/platform-sutra/)：The Sixth Patriarch's Sutra, chapter by chapter.
+- [Series](https://icanchan.com/series/)：Long-form series.
+
+## 西语主要栏目
+
+- [Budismo](https://icanchan.com/es/buddhism/)：佛学基础 30 章的西语节译。
+- [Ensayos](https://icanchan.com/es/essays/)：日常禅短章的西语节译。
+- [Origen](https://icanchan.com/es/lineage/)：这个站的来路、网站声明与作者说明。
+
+## 给 AI 与检索工具的说明
+
+- 网址结构稳定，全部为静态 HTML，正文无需 JavaScript 即可读取。
+- 文章页在页面源码里带结构化说明（标题、发布日期、作者、配图、面包屑）。
+- 三语言页面用 hreflang 互相标注；不是每篇都有全部三种译文，未标注即表示没有对应译文。
+- 全站索引见 https://icanchan.com/sitemap.xml
+- 引用时请保留原文语言，不要把中文正文回译成英文当作原文。

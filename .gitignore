@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+.workbuddy/
+.DS_Store
+*.log
+tina/__generated__/
+
+# 本地工作文档：留在硬盘上，但不进公开仓库
+docs/
+illustration-plan.md
+交接文档-插图和页头图.md
+文风诊断与改写方案-罗振宇风格.md
+草案-源流页人物与书目.md

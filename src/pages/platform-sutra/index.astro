@@ -1,0 +1,285 @@
+---
+import { isPublished } from '../../lib/publish';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+/* The twelve questions take their titles from the live entries. Pieces not yet
+   released still show a title, just without a link. */
+const allChapters = await getCollection(
+  'articles',
+  ({ data }) => !data.draft && data.series === 'platform-sutra'
+);
+const chapters = allChapters
+  .filter((c) => isPublished(c.data))
+  .sort((a, b) => a.id.localeCompare(b.id));
+
+/* The ten chapters of the Zongbao edition. */
+const pins = [
+  { no: 'I', name: 'Origins', ids: ['sutra-01-the-woodcutter', 'sutra-01-wind-flag', 'sutra-02-originally-no-thing'], core: false },
+  { no: 'II', name: 'Prajna', ids: ['sutra-03-what-is-prajna', 'sutra-04-maha-prajna-paramita'], core: false },
+  { no: 'III', name: 'Questions', ids: ['sutra-05-merit-not-blessing'], core: false },
+  { no: 'IV', name: 'Samadhi and Wisdom', ids: ['sutra-06-dinghui-one', 'sutra-07-straight-mind'], core: true },
+  { no: 'V', name: 'Seated Meditation', ids: ['sutra-08-zazen-not-sitting'], core: true },
+  { no: 'VI', name: 'Repentance', ids: ['sutra-09-repentance'], core: false },
+  { no: 'VII', name: 'Conditions', ids: ['sutra-10-fada-lotus', 'sutra-14-huairang', 'sutra-15-xuanjue', 'sutra-16-shenhui'], core: false },
+  { no: 'VIII', name: 'Sudden and Gradual', ids: ['sutra-11-sudden-gradual'], core: true },
+  { no: 'IX', name: 'Protecting the Dharma', ids: ['sutra-12-refusing-emperor'], core: false },
+  { no: 'X', name: 'Final Instructions', ids: ['sutra-13-last-words'], core: false },
+];
+
+/* Read by the day, not by the chapter: ordered by where a person gets stuck.
+   `title` is a fallback; the page prefers the live article title. */
+const days = [
+  {
+    title: 'Nothing to Rest On',
+    copy: 'Outside an inn, a young man selling firewood hears someone reciting a sutra. He catches one line and the load almost slips from his hands. He has never read a book. He cannot even ask which sutra it is. He keeps the line and heads north. Later his students write down what he said, and people call it a sutra. We usually ask where a teaching comes from: who wrote it, what he studied, who authorized him. This book leaves all three blank.',
+    id: 'sutra-01-the-woodcutter',
+  },
+  {
+    title: 'Originally There Is Not One Thing',
+    copy: 'The monastery is choosing an heir. Everyone is asked to write a verse. The senior monk writes: polish the mirror constantly, let no dust settle. It is flawless and everyone nods. A rice-pounder who cannot write asks someone to brush another verse beside it: originally there is not one thing, where could dust settle? Both are good, in different places. The first puts you on the side of not clean enough. The second removes that premise. The sentence "I am not good enough" is rarely said to your face. You scrub it into the mirror yourself.',
+    id: 'sutra-02-originally-no-thing',
+  },
+  {
+    title: 'When the Lotus Turns You',
+    copy: 'Fada has recited the Lotus Sutra three thousand times. Meeting Huineng, he does not lower his head to the floor. Huineng does not ask how much he understands. He says: when the mind is deluded, the sutra turns you; when the mind is awake, you turn the sutra. A book can become so familiar that it starts using you. Faced with a decision, you ask what the text says and stop trusting your own read. Reciting more and turning the text around are two different things.',
+    id: 'sutra-10-fada-lotus',
+  },
+  {
+    title: 'Nothing Resembles It',
+    copy: 'Huairang comes to see Huineng. Huineng asks: what is this thing, and how did it get here? Huairang has no answer. He goes away and works at it for eight years. When he returns he says: call it like anything, and you miss. Every introduction needs a comparison - this job is like that, this relationship is like this. Those eight years were not spent finding a better comparison. They were spent putting the comparisons down, one at a time.',
+    id: 'sutra-14-huairang',
+  },
+  {
+    title: 'The Wind, the Banner, the Mind',
+    copy: 'Two monks watch a banner move in the wind. One says the wind moves. The other says the banner moves. The argument gets loud. Huineng passes and does not pick a side: not the wind, not the banner, your mind moves. We argue like this often. Who started it. Who should change. Whose fault. What we want is not the cause but an owner for it. Huineng never says the wind is still or the banner is still.',
+    id: 'sutra-01-wind-flag',
+  },
+  {
+    title: 'Samadhi and Wisdom Are One',
+    copy: 'You wake at midnight with a sentence you did not say that afternoon. It is one sentence. Then you imagine the reply, draft your answer, plan whether to bring it up tomorrow. By the second loop you are fully awake. The first thought arrived uninvited; every loop after it you renewed yourself. Huineng\'s no-thought is not having no thoughts. It is refusing to pay the subscription.',
+    id: 'sutra-06-dinghui-one',
+  },
+  {
+    title: 'Repentance Without a Mark',
+    copy: 'The same person, before the label, is judged by what he says and does. Once you decide he is difficult, everything he says confirms it; even silence becomes evidence. The label goes on and looking stops. Huineng\'s no-mark repentance lands here: do not follow the first mistake with the next thought, and do not keep walking by the old impression.',
+    id: 'sutra-09-repentance',
+  },
+  {
+    title: 'A Mind That Does Not Bend',
+    copy: 'An argument ended hours ago. You are still replaying it, supplying the better line you should have said. The event happened once; in the mind it runs seven or eight times. Huineng says a straight mind is the place of practice - walking, standing, sitting, lying down, carrying one mind that does not detour. Not detouring is not the same as being over it. It means not adding another layer to what is already finished.',
+    id: 'sutra-07-straight-mind',
+  },
+  {
+    title: 'Seated Meditation Is Not Sitting',
+    copy: 'Many people think chan happens on the cushion: cross the legs, set a timer, count breaths. Then they get up and hand it back to the day. Huineng defines the words again. To sit is not a posture; it is not being carried off by what appears. Chan is not trance; it is seeing your own nature and not stirring. The question changes: what is pulling the mind during the other sixteen hours?',
+    id: 'sutra-08-zazen-not-sitting',
+  },
+  {
+    title: 'No Merit at All',
+    copy: 'Emperor Wu built temples, ordained monks, gave away wealth. He asked Bodhidharma: how much merit have I earned? Bodhidharma said: no merit at all. After doing something you consider large, you wait for a receipt - to be seen, remembered, counted. Huineng says it more directly: what you are after is blessing, not merit. Blessing can be counted. Merit cannot.',
+    id: 'sutra-05-merit-not-blessing',
+  },
+  {
+    title: 'Sudden and Gradual',
+    copy: 'The same thing: one person grinds for years, another understands overnight. So the South became sudden and the North gradual, and the two sides argued for decades. Huineng says: the Dharma has no sudden or gradual; people are sharp or dull. The argument was never about speed. It was about whether this way of practicing is correct. The more practice becomes a points system, the more tired you get. The fatigue is not the road. It is the need to check your progress.',
+    id: 'sutra-11-sudden-gradual',
+  },
+  {
+    title: 'Know Your Original Mind',
+    copy: 'Before Huineng dies, his students weep. He tells them not to. The nature of things has no birth or death, no coming or going. What he leaves is not a formula but eight words: know your original mind, see your original nature. We read a book hoping to carry something away - a method, a line worth memorizing. In these last instructions he opens the hand that wants to carry. When deluded, the teacher ferries you; when awake, you ferry yourself.',
+    id: 'sutra-13-last-words',
+  },
+];
+
+const byId = new Map(chapters.map((c) => [c.id, c]));
+const titleById = new Map(allChapters.map((c) => [c.id, c.data.title]));
+const written = pins.filter((p) => p.ids.some((id) => byId.has(id))).length;
+---
+
+<BaseLayout
+  title="The Platform Sutra"
+  description="The only Chinese text ever called a sutra, spoken by a woodcutter who could not read. Read it by its ten chapters, or by the twelve questions a day raises."
+  path="/platform-sutra/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>The Platform Sutra</h1>
+      <p>Every sutra begins "Thus have I heard." This one begins "Huineng said."</p>
+    </div>
+    <img class="page-head-banner" src="/assets/page-head-sutra.jpg" alt="An old pine in front of a tiered hall, a round mirror hanging on the wall" />
+  </section>
+
+  <section class="section container" style="padding-top:16px;padding-bottom:36px">
+    <div class="text-facts">
+      <div class="fact">
+        <span class="fact-k">Spoken by</span>
+        <span class="fact-v">Huineng (638-713), born in Xinzhou in the far south, family name Lu, sold firewood as a boy to support his mother</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">Recorded by</span>
+        <span class="fact-v">Fahai and other disciples. Later generations kept adding material, which is why the versions differ so much</span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">Versions</span>
+        <span class="fact-v">
+          Dunhuang (c. 780, 12,000 characters, no chapter divisions), Huixin (967), Qisong (1056), Zongbao (1291, 20,000 characters, ten chapters)
+        </span>
+      </div>
+      <div class="fact">
+        <span class="fact-k">Which one</span>
+        <span class="fact-v">Zongbao's is the standard. This section follows its ten chapters, and flags the differences where they matter</span>
+      </div>
+    </div>
+    <p class="fact-note">
+      The textual history is not antiquarian fuss. The Dunhuang version has neither "originally there is not one thing" nor the wind and banner story. The lines everyone knows were added later. Knowing that while you read is more useful than memorizing the verse.
+    </p>
+  </section>
+
+  <section class="section container" style="padding-top:0;padding-bottom:56px">
+    <div class="paths-intro" style="margin-bottom:28px">
+      <h2>Read by the day · twelve questions</h2>
+    </div>
+    <p class="fact-note" style="margin-top:0;margin-bottom:40px">
+      A sutra can be read two ways. By the book, start at chapter one and follow it to the end. By the day, start from whatever is stuck today. These twelve are ordered by the places a life catches. Each title is its own piece; click to read.
+    </p>
+
+    <ol class="day-list">
+      {days.map((d, i) => {
+        const title = titleById.get(d.id) ?? d.title;
+        const linked = byId.has(d.id);
+        return (
+          <li class="day">
+            <span class="day-no">{String(i + 1).padStart(2, '0')}</span>
+            <div class="day-body">
+              <h3>
+                {linked ? <a href={`/platform-sutra/${d.id}/`}>{title}</a> : title}
+              </h3>
+              <p>{d.copy}</p>
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  </section>
+
+  <section class="section container" style="padding-top:0">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>Read by the book · ten chapters ({written} written)</h2>
+    </div>
+
+    <ol class="pin-list">
+      {pins.map((p) => {
+        const entries = p.ids.map((id) => byId.get(id)).filter(Boolean);
+        return (
+          <li class:list={['pin', { 'is-todo': entries.length === 0 }]}>
+            <div>
+              <span class="pin-no">{p.no}</span>
+              <span class="pin-name">{p.name}{p.core && <span class="pin-core">core</span>}</span>
+              {entries.length > 0 ? (
+                <span class="pin-links">
+                  {entries.map((c) => (
+                    <a href={`/platform-sutra/${c.id}/`}>{c.data.title} →</a>
+                  ))}
+                </span>
+              ) : (
+                <span class="pin-count">Not yet</span>
+              )}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+    <img class="mid-banner" src="/assets/page-head-series.jpg" alt="A long landscape of layered hills, with villages and walkways scattered between them" loading="lazy" />
+  </section>
+</BaseLayout>
+
+<style>
+  .text-facts { display: grid; gap: 16px; max-width: 880px; }
+  .fact { display: grid; grid-template-columns: 110px 1fr; gap: 20px; align-items: baseline; }
+  .fact-k { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-dark); }
+  .fact-v { font-size: 15.5px; line-height: 1.85; color: var(--body-text); }
+  .fact-note {
+    max-width: 880px;
+    margin-top: 28px;
+    padding: 16px 20px;
+    border: 1px dashed var(--gold-light);
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.95;
+    color: var(--muted);
+  }
+
+  .day-list { list-style: none; padding: 0; margin: 0; max-width: 880px; }
+  .day {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    gap: 22px;
+    padding: 22px 12px 24px;
+  }
+  .day-no {
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--gold-dark);
+    letter-spacing: 0.04em;
+    padding-top: 4px;
+  }
+  .day-body h3 {
+    font-family: var(--serif);
+    font-size: 23px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+    margin: 0 0 10px;
+  }
+  .day-body h3 a { color: var(--ink); transition: color 0.25s; }
+  .day-body h3 a:hover { color: var(--gold-dark); }
+  .day-body p {
+    font-size: 15.5px;
+    line-height: 1.95;
+    color: var(--body-text);
+    margin: 0 0 12px;
+  }
+
+  .pin-list { list-style: none; padding: 0; margin: 0; }
+  .pin { position: relative; }
+  .pin > div {
+    display: grid;
+    grid-template-columns: 44px 210px 1fr;
+    gap: 18px;
+    align-items: baseline;
+    padding: 16px 12px;
+  }
+  .pin-no { font-family: var(--serif); font-size: 17px; color: var(--gold-dark); }
+  .pin-name { font-family: var(--serif); font-size: 22px; letter-spacing: 0.01em; }
+  .pin-core {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 1px 9px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    vertical-align: 2px;
+  }
+  .pin-count { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .pin.is-todo .pin-name, .pin.is-todo .pin-no { color: var(--faint); opacity: 0.62; }
+  .pin-links { display: flex; flex-direction: column; gap: 6px; }
+  .pin-links a {
+    font-size: 14px;
+    color: var(--gold-dark);
+    width: fit-content;
+    transition: color 0.25s;
+  }
+  .pin-links a:hover { color: var(--gold); }
+  .mid-banner { margin-top: 64px; width: 100%; }
+  @media (max-width: 900px) {
+    .day { grid-template-columns: 32px 1fr; gap: 14px; }
+    .pin > div { grid-template-columns: 38px 1fr; gap: 6px 14px; }
+    .pin-links, .pin-count { grid-column: 2; }
+    .fact { grid-template-columns: 1fr; gap: 4px; }
+  }
+</style>

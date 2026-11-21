@@ -1,0 +1,167 @@
+---
+import { isPublished } from '../../lib/publish';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+
+const articles = (
+  await getCollection('articlesZh', ({ data }) => !data.draft && isPublished(data) && data.series === 'buddhism-101')
+).sort((a, b) => a.data.chapter - b.data.chapter);
+const featured = articles.slice(0, 3);
+
+/* 四道门 = 四种进法：弄懂它讲什么 / 看有没有证据 / 用在日子里 / 读祖师原话。
+   顺序也是这四步。中文板块体系已和英文的 sections.ts 脱钩，这里直接维护。 */
+const gates = [
+  { slug: 'buddhism', title: '佛学基础', description: '想先弄懂它讲什么：四圣谛、八正道，本来各自在回答什么问题。', color: '#c98a6b', image: '/assets/escapes.jpg' },
+  { slug: 'science-of-chan', title: '禅科学', description: '想看有没有证据：无我、正念、呼吸，拿研究对着读一遍。', color: '#6f93b8', image: '/assets/singing-bowl-nepal.jpg' },
+  { slug: 'essays', title: '禅生活', description: '想用在日子里：按八苦分，读那些卡住的地方，从生老病死到求不得。', color: '#5f9a83', image: '/assets/handwoven-zabuton.jpg' },
+  { slug: 'koans', title: '公案', description: '想读祖师原话：师徒对答的老案子，一则一则，看它把人逼到哪儿。', color: '#b08a4f', image: '/assets/japanese-incense-burner.jpg' },
+];
+---
+
+<BaseLayout
+  locale="zh"
+  title="Chan"
+  description="禅是 Zen 的中国源头。我们用今天的眼光读它，不借信仰。三十章，四道门。"
+  path="/zh/"
+>
+  <section class="hero fade-in">
+    <img class="hero-image" src="/assets/home-panorama.jpg" alt="山石间一道细流往下走，汇进开阔的静水，水里一块平石荡着涟漪" />
+    <div class="hero-text">
+      <h1 class="hero-title">禅，不是 Zen。</h1>
+      <p class="hero-lead">
+        Zen 是日语读法，禅才是中国的本来面目。
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-solid" href="/zh/buddhism/">从佛学基础开始 →</a>
+        <a class="btn btn-ghost" href="/zh/series/buddhism-101/">入门之路</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mission">
+    <img class="mission-glyph" src="/assets/chan-logo.png" alt="" aria-hidden="true" />
+    <div class="container">
+      <a class="mission-entry" href="/zh/origin/">
+        <span class="mission-more">禅的本来面目</span>
+        <p>“你参禅吗？一起寻源，<span class="mission-keep">不逐浪花”</span></p>
+      </a>
+    </div>
+  </section>
+
+  <section class="home-panorama">
+    <div class="container">
+      <p class="panorama-note">
+        禅传了两千多年，这站从最基础的地方开始。
+      </p>
+      <a class="btn btn-ghost" href="/zh/lineage/">看源流</a>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro">
+      <h2>一间屋子，四扇门。</h2>
+      <p>同个传统，法门众多，随缘入得。</p>
+    </div>
+    <div class="path-grid gates-grid">
+      {gates.map((s) => (
+        <a class="path-card" href={`/zh/${s.slug}/`} style={`--path-color:${s.color}`}>
+          <img class="path-card-img" src={s.image} alt="" loading="lazy" />
+          <h3>{s.title}</h3>
+          <p>{s.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro" style="margin-bottom:48px">
+      <h2>从头读起。</h2>
+      <p>三十章，一条线：心在做什么，怎么看见它。</p>
+    </div>
+    <div class="article-grid">
+      {featured.map((entry) => <ArticleCard entry={entry} locale="zh" />)}
+    </div>
+    <p style="text-align:center;margin-top:56px">
+      <a class="link-underline serif" style="font-size:20px" href="/zh/series/buddhism-101/">看全部三十章 →</a>
+    </p>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="paths-intro">
+      <h2>不止入门一条路。</h2>
+      <p>祖师是怎么传下来的，文人是怎么参进去的，那些听烂了的词到底在讲什么。</p>
+    </div>
+    <div class="path-grid">
+      <a class="path-card" href="/zh/series/masters/" style="--path-color:#b08a4f">
+        <img class="path-card-img" src="/assets/linen-meditation-shawl.jpg" alt="" loading="lazy" />
+        <h3>祖师传</h3>
+        <p>从灵山一枝花到嵩山一堵墙。一位祖师一篇，只写他在这条线上改了什么。</p>
+      </a>
+      <a class="path-card" href="/zh/series/stories/" style="--path-color:#6f93b8">
+        <img class="path-card-img" src="/assets/escapes.jpg" alt="" loading="lazy" />
+        <h3>故事专题</h3>
+        <p>苏东坡、王维、白居易参禅的趣事。读着轻松，回头一想又有点东西。</p>
+      </a>
+      <a class="path-card" href="/zh/series/glossary/" style="--path-color:#5f9a83">
+        <img class="path-card-img" src="/assets/singing-bowl-nepal.jpg" alt="" loading="lazy" />
+        <h3>名词解释</h3>
+        <p>心即是佛、色即是空、众生平等——拆回它本来在回答什么问题。</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="section container divider-top">
+    <div class="split-grid">
+      <a class="split-card" href="/zh/platform-sutra/">
+        <img src="/assets/desert-zen-morocco.jpg" alt="" loading="lazy" />
+        <h3>中国唯一称「经」的一部</h3>
+        <p>
+          慧能不识字，却留下中国唯一被尊为「经」的文本。无念、无相、无住，还有那场把禅宗分成两半的顿渐之争。
+        </p>
+        <span class="link-underline" style="font-size:12px;letter-spacing:.14em">读坛经 →</span>
+      </a>
+      <a class="split-card" href="/zh/lineage/">
+        <img src="/assets/coastal-sanctuary-portugal.jpg" alt="" loading="lazy" />
+        <h3>从菩提树到此刻读它的一个人</h3>
+        <p>
+          佛陀、达摩、六祖、虚云——一条线走到今天，中间断过，也补过。
+        </p>
+        <span class="link-underline" style="font-size:12px;letter-spacing:.14em">看源流 →</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* 发刊词入口：整块可点，hover 只变色，不画线 */
+  .mission-entry { display: block; position: relative; text-align: center; }
+  .mission-entry p { transition: color .3s; }
+  .mission-entry:hover p { color: var(--gold-dark); }
+  .mission-more {
+    display: inline-block;
+    margin-bottom: 26px;
+    font-size: 12px;
+    letter-spacing: .18em;
+    color: var(--gold-dark);
+    transition: color .3s;
+  }
+  .mission-entry:hover .mission-more { color: var(--ink); }
+  .mission-keep { white-space: nowrap; }
+
+  /* 图已上移到首屏，这一块跟上面连成一段暖纸色，不再另起底色 */
+  .home-panorama { padding: 8px 0 76px; background: var(--paper-warm); }
+  .home-panorama .container { text-align: center; }
+  .panorama-note {
+    max-width: 640px;
+    margin: 0 auto 26px;
+    font-size: 17px;
+    line-height: 1.9;
+    color: var(--muted);
+    text-align: center;
+  }
+  @media (max-width: 640px) {
+    .mission-more { margin-bottom: 20px; }
+    .panorama-note { font-size: 15px; }
+  }
+</style>

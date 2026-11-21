@@ -1,0 +1,187 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const essays = await getCollection('essaysZh', ({ data }) => !data.draft && isPublished(data));
+const list = essays
+  .filter((e) => e.data.section === 'science-of-chan')
+  .sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999));
+
+/* 对照的样板：禅怎么说 × 今天怎么说。落点不是谁对谁错，是「是不是一回事」。 */
+const pairs = [
+  {
+    chan: '无我',
+    chanText:
+      '「无我」不是否认这个身体、这份记忆的存在，是否认在这一切背后，还站着一个固定不变、可以被威胁、被侮辱、被毁灭的「我」。人平常觉得心里住着一个主人，它看、它想、它做主。可仔细一找，只找到一串不断生灭的念头、感受和身体变化，找不到那个主人。禅把这个讲得很直：不是要人消灭自己，是让人看清，那个被紧紧护着的「我」，其实是一堆因缘凑在一起、暂时贴了标签的过程。看破这一点，很多「我被冒犯了」「我被否定了」的疼，就跟着松了。',
+    today: '自我是大脑的叙事',
+    todayText:
+      '心理学和神经科学近几十年的研究，逐步拼出一个画面：「自我」不是一个静止的小人坐在脑子里，而是大脑不断编造、不断修订的一个故事。记忆会被一次次重写，人的「我是谁」其实是一份持续更新的自传，为的是让经验显得连贯、有主角。研究者发现，把自我感拆开来看，找不到一个单一的「我」中枢，只有分散的脑区在合作讲这个故事。这个发现不证明「无我」，但它说明：那个坚实到不容侵犯的「我」，在脑的层面更像一个叙事者，而非一块石头。',
+    point: '两条路，走到同一个地方：那个「我」，没有以为的那么实。',
+  },
+  {
+    chan: '念起即觉',
+    chanText:
+      '禅里常说「念起即觉」。念头生起来的那一刻，能被看见，而不是被它卷着走。人大多数时候不是在想，是被想——念头来了，跟着跑出去很远，才恍然回神。禅的方法不要求压住念头、清空脑袋，那做不到；它只要求练习一种能力：在念头刚冒头的瞬间，认出「这是一个念头」。这一认，就多了一层空间，人不再等于那个念头。觉，不是多想一层，是退后一步看。这一步，是禅修反复练习的基本动作。',
+    today: '元认知',
+    todayText:
+      '心理学把「对自己的思考再想一层」叫作元认知。人不仅能想，还能知道自己正在想、在想什么。研究者把这种能力当作理解自我调节、学习与情绪控制的一把钥匙。一个人若能站在念头之外观察念头，就不那么容易被情绪和惯性牵着走。大量正念相关的研究，本质上练的正是这层元认知——注意力一次次回到当下，就是对「我正在走神」这个念头的觉察。名字不同，指向的动作，和禅说的「念起即觉」几乎重合。',
+    point: '名字不同，动作是同一个：看见念头，而不等于念头。',
+  },
+  {
+    chan: '当下',
+    chanText:
+      '禅反复讲「活在当下」，容易被听成一句鸡汤。它其实在描述心的一种状态：不在过去里反刍，也不在未来里预演，就待在此刻正在发生的事上。人吃饭时想工作，工作时想休息，心总在别处，很少真正在场。禅说的当下，不是让人放弃计划、不回忆过去，而是让人有能力把注意力收回来，落在眼前这一件事、这一口呼吸上。心能安住在当下，很多焦虑自然就没了地方落脚。',
+    today: '反刍与预演',
+    todayText:
+      '心理研究给「心不在当下」取了两类名字：抑郁常被描述为「反刍」，反复咀嚼过去的失败与伤痛；焦虑常被描述为「预演」，提前在脑中排练还没发生的坏结果。两个方向相反，却有同一个特征——心都不在眼前。研究者发现，这两类思维模式和情绪障碍关系密切，而把注意力拉回当下，是许多疗法共同用到的一步。禅说的「当下」，从科学这边看，正是打断这两种心不在场动作的那一下。',
+    point: '一个是修行传统，一个是临床观察，指向同一件事：把心拉回此刻。',
+  },
+  {
+    chan: '苦',
+    chanText:
+      '佛法第一个讲的不是「空」，是「苦」。这里的苦，不是「生活很悲惨」这种呻吟，而是一个更准的观察：心对负面体验有一种天生的紧抓和放大。一件事不如意，人会反复想、反复感受，把它从一件小事滚成一件大事。佛把这个机制看得透，所以说「苦」，不是悲观，是诚实。承认这颗心天生会放大不如意，不是认输，是开始理解它、不被它牵着走的起点。',
+    today: '消极偏向',
+    todayText:
+      '认知科学发现，人脑处理信息不是公平的：对坏消息的反应，比对好消息更重、更快、也更持久。这叫「消极偏向」。进化上它曾帮人躲过危险，但放到今天，它让人对一句批评记得比十句夸奖还牢，对一次失败反复回味。研究反复验证了这个不对称，也解释了为什么人容易放大不如意、低估顺遂。佛说的「苦」，在脑科学这里找到了一个机制层面的对应：不是人心坏，是这颗脑天生偏重坏的那一面。',
+    point: '佛说苦，科学说消极偏向——都是先看清这颗心天生的偏心。',
+  },
+  {
+    chan: '放下',
+    chanText:
+      '禅讲的「放下」，常被误解成「什么都不在乎」。它其实说的是另一件事：不是消灭念头，是不再被念头牵着走。念头照样会来，情绪照样会起，但人不跟着它跑，也不拼命压它。放下，是松开那只紧紧抓住的手——对结果、对得失、对「必须如此」的执着。手松了，东西还在，但人不再被它坠着。这个「放下」，恰恰需要用力才能做到：每一次松开，都是一次练习。',
+    today: '认知去融合',
+    todayText:
+      '接纳承诺疗法里有一个核心概念，叫「认知去融合」。它说，让人痛苦的往往不是想法本身，而是人和想法「融」成了一体——把「我不够好」这个念头，当成了「我不够好」这个事实。去融合，就是训练人退后一步，把想法只看作想法：不是事实，不必当真，不必服从。研究者把它发展成一套具体的练习，比如给念头加上「我注意到我有一个想法……」的前缀。这层距离，和禅说的「放下」，指的是同一种松手。',
+    point: '一个说「别跟着跑」，一个说「想法不等于事实」，是同一种松手。',
+  },
+  {
+    chan: '无常',
+    chanText:
+      '「无常」是佛法最基础的一个观察：没有一样东西停得住，包括这颗心。人痛苦，常常不是因为变化本身，而是因为心里暗暗期待「这一次能停住」——关系能停住、健康能停住、好日子能停住。可事实是，什么都停不住。无常不是让人悲观，是让人看清这件事，从而不再把力气花在「留住」上。看清一切都在流，反而能更安稳地待在流动里。',
+    today: '神经可塑性',
+    todayText:
+      '脑科学近几十年的重大发现之一，是「神经可塑性」：大脑的连接不是成年后就定型了，而是随经验不断改写，一生都在变。练习会强化某些通路，荒废会让另一些通路减弱，成年之后依然如此。这个发现和「无常」形成一种奇妙的呼应——原来连这颗心本身，也不是一块固定的东西，而是一张随时在重写的网。佛说「一切在变」，脑科学如今能拍到这个「变」发生的画面。',
+    point: '「一切在变」不是玄谈，脑科学已经能拍到那个画面。',
+  },
+  {
+    chan: '慈悲',
+    chanText:
+      '慈悲不是软弱，也不是无原则的好。慈，是愿一切生命得安乐；悲，是见众生受苦而心生不忍，并愿意做点什么。它和「爱」不完全一样，爱的对象往往有选择，慈悲没有。禅把慈悲看作修行的一部分，不是装出来的好人，而是看清众生彼此相连之后，自然生出的东西。当人真正看见别人和自己一样会痛、会怕、会卡住，那道「你我」的墙就薄了，慈悲就出来了。',
+    today: '共情研究',
+    todayText:
+      '科学家用脑成像和对照实验研究慈悲，得到一个方向一致的结论：慈悲是可以练的。长期做慈悲冥想的人，与共情、积极情绪相关的脑区活动更强；即便只做几周的短训，人在面对他人痛苦时的反应也会更趋近「想帮忙」而非「想躲开」。研究还提示，这种练习带来的改变，和神经可塑性有关——脑在实实在在地重写。这给「慈悲不是天生、而是可修」这个古老说法，添了一份现代的证据。',
+    point: '慈悲不是天生的好脾气，而是一种能被练习的脑状态。',
+  },
+];
+---
+
+<BaseLayout
+  locale="zh"
+  title="禅科学"
+  description="禅说的那些关于「心」的话，用今天听得懂的语言重讲一遍。不裁判，只对照。"
+  path="/zh/science-of-chan/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>禅科学</h1>
+      <p>禅在两千五百年前就说了些关于「心」的话；今天心理学、认知科学也说到了一些。</p>
+    </div>
+    <img class="page-head-banner" src="/assets/page-head-science.jpg" alt="一块卵石静卧水面，旁边几道细线像仪器上的刻度" />
+  </section>
+
+  <section class="section container" style="padding-top:16px;padding-bottom:44px">
+    <div class="premise">
+      <h2>不是裁判，是互相照亮</h2>
+      <p>
+        有人喜欢说「禅其实是大脑的可塑性」「开悟就是默认模式网络关闭」。这类话很讨喜，但它们是翻译，不是对照——把一个还没被验证的东西，说成已经被验证了。
+      </p>
+      <p>
+        这一栏不这么做。反过来也不做：不拿一张「证据分级表」去给禅打分。禅里本来没有「站得住」「站不住」这种分别，硬要分，是拿实验室的尺子去量一件不靠那个尺子活的东西。
+      </p>
+      <p class="premise-note">
+        它只做一件事：把禅对「心」的说法，用今天人听得懂的话重讲一遍。遇到现代心理学、认知科学也讲到类似地方的时候，把两边摆在一起——哪里对得上、哪里对不上，照实说。落点永远是「原来在说同一件事」，或「原来不是一回事」。
+      </p>
+    </div>
+  </section>
+
+  <section class="section container" style="padding-top:0">
+    <div class="paths-intro" style="margin-bottom:36px">
+      <h2>摆在一起看</h2>
+      <p>七组样板。左边是禅的话，右边是今天的话，每一句都展开说清楚，最后一行是它们碰上的地方。</p>
+    </div>
+
+    <div class="pair-list">
+      {pairs.map((p) => (
+        <div class="pair">
+          <div class="pair-side">
+            <span class="pair-who">禅说</span>
+            <span class="pair-term">{p.chan}</span>
+            <p class="pair-text">{p.chanText}</p>
+          </div>
+          <div class="pair-side">
+            <span class="pair-who">今天说</span>
+            <span class="pair-term">{p.today}</span>
+            <p class="pair-text">{p.todayText}</p>
+          </div>
+          <p class="pair-point">{p.point}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>这一栏的文章</h2>
+    </div>
+    <ul class="read-index">
+      {list.map((entry) => (
+        <li>
+          <a href={`/zh/essays/${entry.id}/`}>
+            <span class="ttl">{entry.data.title}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .premise { max-width: 780px; margin: 0 auto; }
+  .premise h2 { font-size: clamp(26px, 3.4vw, 36px); margin-bottom: 22px; line-height: 1.3; }
+  .premise p { font-size: 16.5px; line-height: 1.95; color: var(--body-text); margin-bottom: 20px; }
+  .premise-note {
+    padding: 16px 20px;
+    border: 1px dashed var(--gold-light);
+    border-radius: 8px;
+    color: var(--muted) !important;
+    font-size: 15.5px !important;
+  }
+
+  .pair-list { display: grid; gap: 40px; max-width: 960px; margin: 0 auto; }
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--divider);
+  }
+  .pair-side { padding: 28px 30px; display: grid; gap: 12px; align-content: start; }
+  .pair-side + .pair-side { border-left: 1px solid var(--divider); }
+  .pair-who { font-size: 11px; letter-spacing: 0.18em; color: var(--gold-dark); }
+  .pair-term { font-family: var(--zh-head); font-size: 24px; letter-spacing: 0.05em; line-height: 1.4; }
+  .pair-text { font-size: 15px; line-height: 1.9; color: var(--body-text); margin: 0; }
+  .pair-point {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 16px 30px;
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--forest);
+    border-top: 1px solid var(--divider);
+    background: var(--paper-warm);
+  }
+  @media (max-width: 760px) {
+    .pair { grid-template-columns: 1fr; }
+    .pair-side + .pair-side { border-left: none; border-top: 1px solid var(--divider); }
+  }
+</style>

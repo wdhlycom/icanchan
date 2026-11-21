@@ -1,0 +1,36 @@
+---
+import { isPublished } from '../../../../lib/publish';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articlesZh', ({ data }) => !data.draft && isPublished(data) && data.series === 'stories');
+---
+
+<BaseLayout
+  locale="zh"
+  title="故事专题"
+  description="唐宋的读书人一边做官、一边参禅。苏东坡、王维、白居易——禅给了入世的人一个出口。"
+  path="/zh/series/stories/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>故事专题</h1>
+      <p>不是人物传记，是一段段有意思的参禅故事。读着轻松，回头一想又有点东西。</p>
+    </div>
+  </section>
+
+  {articles.length > 0 ? (
+    <section class="page-body container">
+      <div class="chapter-list">
+        {articles.map((entry) => (
+          <a class="chapter-row" href={`/zh/series/stories/${entry.id}/`}>
+            <span class="num">{String(entry.data.chapter).padStart(2, '0')}</span>
+            <span class="ttl">{entry.data.title}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  ) : (
+    <p class="section-empty">这一专题还没写。</p>
+  )}
+</BaseLayout>

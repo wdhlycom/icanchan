@@ -1,0 +1,182 @@
+---
+import { isPublished } from '../../lib/publish';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const life = await getCollection(
+  'essays',
+  ({ data }) => !data.draft && isPublished(data) && data.section === 'zen-life'
+);
+const lead = life.find((e) => e.data.category === 'Overview');
+
+/* 八苦：这一栏唯一的分类。每篇自己写明属于哪一苦，页面只负责读出来。 */
+const sorrows = [
+  { key: 'Birth', note: 'Being here is tiring in a way nobody warns you about' },
+  { key: 'Aging', note: 'It is not really the wrinkles' },
+  { key: 'Illness', note: 'Pain, and then a second layer on top' },
+  { key: 'Death', note: 'Cannot hold on, will not let go' },
+  { key: 'Parting from what you love', note: 'Cannot keep it, cannot get close' },
+  { key: 'Meeting what you resent', note: 'Cannot avoid it, cannot put it down' },
+  { key: 'Not getting what you want', note: 'You want it; it does not come' },
+  { key: 'The mind on fire', note: 'Thoughts that keep sending you a bill' },
+];
+const byOrder = (a, b) => (a.data.order ?? 999) - (b.data.order ?? 999);
+const groups = sorrows.map((s) => ({
+  ...s,
+  items: life.filter((e) => e.data.category === s.key).sort(byOrder),
+}));
+
+/* 不落在哪一苦上的几篇：方法与故事。不分组、不编号、不排先后。 */
+const keys = new Set(['Overview', ...sorrows.map((s) => s.key)]);
+const rest = life.filter((e) => !keys.has(e.data.category)).sort(byOrder);
+---
+
+<BaseLayout
+  title="Chan & Life"
+  description="Short pieces on where an ordinary day actually gets difficult: work, family, the phone at night, and the mind that will not settle."
+  path="/essays/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>Chan &amp; Life</h1>
+      <p>The practice is not somewhere else. It is the Tuesday you are already in.</p>
+    </div>
+  </section>
+
+  {lead && (
+    <section class="section container" style="padding-top:20px;padding-bottom:48px">
+      <a class="guide-card" href={`/essays/${lead.id}/`}>
+        <span class="guide-kicker">Start here</span>
+        <h2>{lead.data.title}</h2>
+        <span class="card-meta">Read this first; the rest of the section assumes it</span>
+      </a>
+    </section>
+  )}
+
+  <section class="section container" style="padding-top:0">
+    <div class="paths-intro" style="margin-bottom:40px">
+      <h2>The eight sufferings</h2>
+      <p>
+        An old list, read as ordinary places people get stuck: birth, aging, illness, death,
+        parting from what you love, meeting what you resent, not getting what you want, and a
+        mind that will not settle. Nothing here is a big event. It is the small part of the day
+        that keeps repeating.
+      </p>
+    </div>
+    <div class="field-grid">
+      {groups.map((g) => (
+        <div class="field-card">
+          <h3>{g.key}</h3>
+          <span class="field-note">{g.note}</span>
+          <ul class="field-list">
+            {g.items.map((entry) => (
+              <li><a href={`/essays/${entry.id}/`}>{entry.data.title}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {rest.length > 0 && (
+    <section class="section container">
+      <div class="paths-intro" style="margin-bottom:32px">
+        <h2>A few more</h2>
+        <p>Method and old stories. Not filed under any one suffering; just read whichever catches your eye.</p>
+      </div>
+      <ul class="rest-list">
+        {rest.map((entry) => (
+          <li><a href={`/essays/${entry.id}/`}>{entry.data.title}</a></li>
+        ))}
+      </ul>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .guide-card {
+    display: block;
+    padding: 36px 40px;
+    background: var(--paper-warm);
+    border-radius: 2px;
+    transition: background .4s;
+  }
+  .guide-card:hover { background: var(--white); }
+  .guide-kicker {
+    display: inline-block;
+    margin-bottom: 14px;
+    font-size: 12px;
+    letter-spacing: .18em;
+    color: var(--gold-dark);
+  }
+  .guide-card h2 {
+    font-size: clamp(30px, 4vw, 44px);
+    margin: 0 0 14px;
+    transition: color .3s;
+  }
+  .guide-card:hover h2 { color: var(--gold-dark); }
+  .field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px 48px;
+  }
+  .field-card h3 {
+    font-family: var(--serif);
+    font-size: 24px;
+    letter-spacing: 0.01em;
+    margin: 0 0 4px;
+  }
+  .field-note {
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--gold-dark);
+  }
+  .field-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+    display: grid;
+    gap: 10px;
+  }
+  .field-list li {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    padding-left: 18px;
+    position: relative;
+  }
+  .field-list li::before {
+    content: '·';
+    position: absolute;
+    left: 2px;
+    top: -2px;
+    color: var(--gold);
+    font-size: 20px;
+  }
+  .field-list a {
+    color: var(--body-text);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .field-list a:hover { color: var(--gold-dark); }
+  .rest-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 40px;
+  }
+  .rest-list a {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--body-text);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .rest-list a:hover { color: var(--gold-dark); }
+  @media (max-width: 900px) {
+    .field-grid { grid-template-columns: 1fr; gap: 28px; }
+    .rest-list { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+import { isPublished } from '../../../lib/publish';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articlesZh', ({ data }) => !data.draft && isPublished(data));
+const masters = articles.filter((a) => a.data.series === 'masters');
+const stories = articles.filter((a) => a.data.series === 'stories');
+const glossary = articles.filter((a) => a.data.series === 'glossary');
+---
+
+<BaseLayout
+  locale="zh"
+  title="专题"
+  description="祖师传、故事专题、名词解释，以及独立成栏的坛经逐品精读。三十章佛学入门已归入佛学基础板块。"
+  path="/zh/series/"
+>
+  <section class="page-head">
+    <div class="container">
+      <h1>专题</h1>
+      <p>章节顺着写，单看也行。</p>
+    </div>
+  </section>
+
+  <section class="page-body container">
+    <div class="series-card">
+      <img src="/assets/alpine-stillness-swiss.jpg" alt="雪山" />
+      <div>
+        <span class="tag">特别专题 · 独立板块</span>
+        <h2>坛经</h2>
+        <p>
+          它是一部经，也是一个专题。唯一被尊为「经」的中国文本，逐品精读——因为体量特殊，它单独成栏，正文入口在导航的「坛经」。
+        </p>
+        <a class="btn btn-ghost" href="/zh/platform-sutra/">进入专题</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/coastal-sanctuary-portugal.jpg" alt="海岸古寺" />
+      <div>
+        <span class="tag">已写 {masters.length} 篇 · 谱系在建</span>
+        <h2>祖师传</h2>
+        <p>
+          从灵山的一枝花，到嵩山的一堵墙，再到续住这条线的虚云。一位祖师一篇，不写年谱，只写他在这条线上改了什么。
+        </p>
+        <a class="btn btn-ghost" href="/zh/series/masters/">进入专题</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/curated-hero.jpg" alt="文人山水" />
+      <div>
+        <span class="tag">已写 {stories.length} 篇</span>
+        <h2>故事专题</h2>
+        <p>
+          苏东坡、王维、白居易——中国最聪明的一批读书人，一边做官、一边参禅。一段段有意思的故事，读着轻松，回头一想又有点东西。
+        </p>
+        <a class="btn btn-ghost" href="/zh/series/stories/">进入专题</a>
+      </div>
+    </div>
+
+    <div class="series-card">
+      <img src="/assets/desert-zen-morocco.jpg" alt="沙漠中的修行者" />
+      <div>
+        <span class="tag">已写 {glossary.length} 条 · 框架在建</span>
+        <h2>名词解释</h2>
+        <p>
+          心即是佛、色即是空、众生平等——这些你听过一百遍的词，一个个拆回它本来在回答什么问题，再加一句落到日子上的理解。
+        </p>
+        <a class="btn btn-ghost" href="/zh/series/glossary/">进入专题</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
